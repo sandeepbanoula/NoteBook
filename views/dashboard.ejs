@@ -20,59 +20,26 @@
     </div>
   </nav>
 
-  <div class="py-5">
-  <div class="card" style="width: 18rem">
-    <div class="card-header">Subject Name</div>
-    <div class="card-body">
-      <h5 class="card-title">Assignment #1</h5>
-      <p class="card-text">Assignment Topic</p>
-      <a href="#" class="btn btn-primary">Submit Now</a>
-    </div>
-  </div>
-
-  <div class="card" style="width: 18rem">
-    <div class="card-header">Subject Name</div>
-    <div class="card-body">
-      <h5 class="card-title">Assignment #2</h5>
-      <p class="card-text">Assignment Topic</p>
-      <a href="#" class="btn btn-primary">Submit Now</a>
-    </div>
-  </div>
-
-  <div class="card" style="width: 18rem">
-    <div class="card-header">Subject Name</div>
-    <div class="card-body">
-      <h5 class="card-title">Assignment #3</h5>
-      <p class="card-text">Assignment Topic</p>
-      <a href="#" class="btn btn-primary">Submit Now</a>
+  <div class="container-fluid">
+    <div class="py-4">
+      <h2>Assignment Dashboard</h2>
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 py-3">
+        <% result.forEach(function(element){ %>
+          <div class="col">
+            <div class="card mt-3" style="width: 18rem">
+              <div class="card-header"><%=element.subject%></div>
+              <div class="card-body">
+                <h5 class="card-title">Assignment #<%=element.id%></h5>
+                <p class="card-text"><%=element.topic%></p>
+                <a href="/assignment/<%=element.id%>" class="btn btn-primary">Submit Now</a>
+              </div>
+            </div>
+          </div>
+          <%  }); %>
+        
+      </div>
     </div>
   </div>
 </div>
-</div>
-<!-- Footer -->
-<footer id="footer">
-  <div class="container-xl mt-5">
-    <div class="container-fluid">
-      <span class="footer-logo">
-        <a class="text-decoration-none text-reset" href="/#">
-          <img src="/images/LOGO.svg" alt="Notebook-logo" class="logo" />
-          <strong>NOTEBOOK</strong>
-        </a>
-      </span>
-      <span class="footer-link">
-        <a class="footer-icon" href="/">Home</a>
-        <a class="footer-icon" href="#about">About</a>
-        <a class="footer-icon" href="#blog">Blog</a>
-        <a class="footer-icon" href="mailto:sandeep.banoula@gmail.com"
-          >Contact</a
-        >
-      </span>
-    </div>
-    <hr />
-    <p class="footer-text">
-      © 2021 <a class="text-reset" href="/">NoteBook</a> All Right Reserved.
-    </p>
-  </div>
-</footer>
 
 <%- include('partials/footer'); -%>

@@ -1,46 +1,20 @@
 require("dotenv").config()
 const express = require("express");
+const db = require('./database/db');
+const bodyParser = require("body-parser");
 const ejs = require("ejs");
-const mysql = require("mysql");
 const session = require("express-session");
+var _ = require("lodash");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-
-// Database Connection
-
-// const db = mysql.createConnection({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASS,
-//   database: process.env.DB_DATABASE,
-//   port: process.env.DB_PORT
-// });
-
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "notebook_manager",
-  port: 3306
-});
-
-//Create Connection
-db.connect(function(err) {
-  if (err) {
-    console.log(err);
-    return;
-  } else {
-    console.log("Database is up and running");
-  }
-});
-
 
 const app = express();
 
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
-// app.use(bodyParser.urlencoded({
-//   extended: true
-// }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.use(session({
   secret: "NoteBook are use to keep secrets.",
@@ -50,18 +24,18 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function (user, cb) {
   cb(null, user);
 });
 
 passport.deserializeUser((req, user, cb) => {
 
-  db.query("SELECT * FROM user WHERE google_id = ?", [user.google_id], (err, rows) => {
-      if (err) {
-          console.log(err);
-          return cb(null, err);
-      }
-          cb(null, user);
+  db.query(`SELECT * FROM user WHERE google_id = ?`, [user.google_id], (err, rows) => {
+    if (err) {
+      console.log(err);
+      return cb(null, err);
+    }
+    cb(null, user);
   });
 });
 
@@ -72,32 +46,35 @@ passport.use(new GoogleStrategy({
 },
 
   function (accessToken, refreshToken, profile, cb) {
-    
-    let sql="SELECT * FROM user WHERE google_id = ?";
-          db.query(sql, profile.id, (err, user) => {
-            console.log(user);
-              if (err) {
-                  return cb(err);
-              } else if (user.length) {
-                   return cb(null, user);
-               } 
-              else {
-                console.log(profile.id);
-                let newUser = {
-                  google_id: profile.id,
-                  google_name: profile.displayName
-                };
-                let sql="INSERT INTO user SET ?";
-                  let query= db.query(sql,
-                      newUser, (err, rows) => {
-                          if (err) {
-                              console.log(err);
-                          }
 
-                          return cb(null, newUser);
-                      })
-              }
-          });
+    let sql = `SELECT * FROM user WHERE google_id = ?`;
+    db.query(sql, profile.id, (err, result) => {
+      console.log(result);
+      if (err) {
+        return cb(err);
+      } else if (result.length) {
+        console.log(result);
+        console.log("hello");
+        return cb(null, result);
+      }
+      else {
+
+        let newUser = {
+          google_id: profile.id,
+          google_name: profile.displayName
+        };
+        console.log(newUser);
+        let sql = `INSERT INTO user SET ?`;
+        let query = db.query(sql,
+          newUser, (err, rows) => {
+            if (err) {
+              console.log(err);
+            }
+
+            return cb(null, result);
+          })
+      }
+    });
   }
 ));
 
@@ -105,6 +82,6 @@ var routes = require("./routes/api/routes");
 
 app.use('/', routes);
 
-app.listen(3000,()=>{
+app.listen(3000, () => {
   console.log("Server is up and running in port 3000");
 })

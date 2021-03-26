@@ -1,0 +1,64 @@
+<%- include('partials/header'); -%>
+
+<div class="container-xl">
+  <!-- Navbar-Section -->
+  <nav class="navbar navbar-expand navbar-light mt-5">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/#">
+        <img src="/images/LOGO.svg" alt="Notebook-logo" class="logo" />
+        <strong>NOTEBOOK</strong>
+      </a>
+      <div class="ml-auto">
+        <ul class="navbar-nav">
+          <li class="nav-item get-started">
+            <a class="nav-link active px-3" aria-current="page" href="/logout"
+              >LogOut</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="py-5">
+      <h1>Add Assignment</h1>
+
+      <form action="/addAssignment" method="post">
+        <div class="form-group mt-3">
+          <label for="subject">Subject</label>
+          <select class="form-select" name="subject" required>
+            <option value="">Select Subject</option>
+            <option value="C#">C#</option>
+            <option value="CNS">CNS</option>
+            <option value="CNT">CNT</option>
+            <option value="DBP">DBP</option>
+            <option value="MicroProccesor">MicroProccesor</option>
+            <option value="SQT">SQT</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="topic">Topic</label>
+          <input id="topic" class="form-control" type="text" name="topic" />
+        </div>
+
+        <div class="form-group mt-3">
+          <label for="assignment">Assignment</label>
+          <textarea
+            id="assignment"
+            class="form-control"
+            name="assignment"
+            rows="8"
+          ></textarea>
+        </div>
+
+        <button class="btn btn-primary mt-3" type="submit" name="Assign">
+          Assign
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer'); -%>
