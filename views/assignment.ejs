@@ -22,25 +22,43 @@
 
   <div class="container-fluid">
     <div class="py-5">
-      <h5><b>Subject</b> <%=result.subject%> - <b>Assignmnet</b> #<%=result.id%></h5>
-      <h2><%=result.topic%></h2>
-      <%=result.assignment%>
+      <div class="pb-3">
+        <h5>
+          <b>Subject</b> <%=result.subject%> - <b>Assignmnet</b> #<%=result.id%>
+        </h5>
+        <h2><%=result.topic%></h2>
+        <div>
+          <%-result.body%>
+        </div>
+        
+      </div>
+      <hr />
+      <h2>Submit Assignment</h2>
 
-      <h2 class="pt-5">Submit Assignment</h2>
-
-      <form >
-
+      <form>
         <div class="form-group mt-3">
           <label for="comment">Add Text or Comment</label>
           <input id="comment" class="form-control" type="text" name="comment" />
         </div>
 
         <div class="form-group mt-3">
-                <label for="formFileMultiple" class="form-label">Choose Assignment Images</label>
-                <input class="form-control" type="file" id="formFileMultiple" multiple>
+          <label for="formFileMultiple" class="form-label"
+            >Choose Assignment Images</label
+          >
+          <input
+            class="form-control"
+            type="file"
+            id="formFileMultiple"
+            multiple
+          />
         </div>
 
-        <a class="btn btn-primary mt-3" type="submit" href="/dashboard" name="Submit">
+        <a
+          class="btn btn-primary mt-3"
+          type="submit"
+          href="/dashboard"
+          name="Submit"
+        >
           Assign
         </a>
       </form>

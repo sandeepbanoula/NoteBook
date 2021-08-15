@@ -1,7 +1,6 @@
 require("dotenv").config()
 const express = require("express");
 const db = require('./database/db');
-const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const session = require("express-session");
 var _ = require("lodash");
@@ -9,15 +8,17 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({
+app.use(express.urlencoded({
   extended: true
 }));
+app.use(express.static('public'));
 
 app.use(session({
-  secret: "NoteBook are use to keep secrets.",
+  secret: "NoteBook are use to keep notes.",
   resave: false,
   saveUninitialized: false
 }));
@@ -30,7 +31,7 @@ passport.serializeUser(function (user, cb) {
 
 passport.deserializeUser((req, user, cb) => {
 
-  db.query(`SELECT * FROM user WHERE google_id = ?`, [user.google_id], (err, rows) => {
+  db.query(`SELECT * FROM nb_users WHERE g_id = ?`, [user.google_id], (err, rows) => {
     if (err) {
       console.log(err);
       return cb(null, err);
@@ -46,42 +47,39 @@ passport.use(new GoogleStrategy({
 },
 
   function (accessToken, refreshToken, profile, cb) {
-
-    let sql = `SELECT * FROM user WHERE google_id = ?`;
+    let sql = `SELECT * FROM nb_users WHERE g_id = ?`;
     db.query(sql, profile.id, (err, result) => {
-      console.log(result);
+  
       if (err) {
         return cb(err);
       } else if (result.length) {
-        console.log(result);
-        console.log("hello");
         return cb(null, result);
       }
       else {
 
         let newUser = {
-          google_id: profile.id,
-          google_name: profile.displayName
+          name: profile.displayName,
+          g_id: profile.id,
+          pic: profile.photos[0].value,
+          view: "asStudent"
         };
         console.log(newUser);
-        let sql = `INSERT INTO user SET ?`;
+        let sql = `INSERT INTO nb_users SET ?`;
         let query = db.query(sql,
           newUser, (err, rows) => {
             if (err) {
               console.log(err);
             }
 
-            return cb(null, result);
+            return cb(null, newUser);
           })
       }
     });
   }
 ));
 
-var routes = require("./routes/api/routes");
+const routes = require("./routes/api/routes");
 
 app.use('/', routes);
 
-app.listen(3000, () => {
-  console.log("Server is up and running in port 3000");
-})
+app.listen(port, () => console.log(`Server is up and running in port ${port}`));

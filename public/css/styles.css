@@ -3,9 +3,35 @@
   font-weight: 600;
 }
 
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+html {
+  height: -webkit-fill-available;
+}
+
+main {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100vh;
+  /* height: -webkit-fill-available; */
+  max-height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .main-color {
   color: #0e47bf;
   font-weight: 800;
+}
+
+/* SideBar Meanu */
+.bi {
+  vertical-align: -.125em;
+  pointer-events: none;
+  fill: currentColor;
 }
 
 /* NavBar */

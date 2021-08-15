@@ -4,6 +4,18 @@ const passport = require('passport');
 
 const router = express.Router();
 
+//start route to create tables
+router.get('/start', function(req, res){
+  let sql = `SELECT * FROM assignment`;
+  let query = db.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("dashboard", { result: result });
+    }
+  });
+});
+
 // middleware that is specific to this router
 // router.use(function timeLog (req, res, next) {
 //   console.log('Time: ', Date.now())
@@ -30,29 +42,20 @@ router.get('/login', function (req, res) {
   } else {
     res.render("login");
   }
-})
-
-//defines the dashboard route
-// router.get('/dashboard', function (req, res) {
-
-//   if(req.isAuthenticated()){
-//   res.render("dashboard");
-//   }else{
-//     res.redirect("/login");
-//   }
-// });
+});
 
 //defines the dashboard route
 router.get('/dashboard', function (req, res) {
 
   if (req.isAuthenticated()) {
 
-    let sql = `SELECT * FROM assignment`;
+    let sql = `SELECT * FROM nb_assignments`;
     let query = db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        res.render("dashboard", { result: result });
+  
+        res.render("dashboard", { result: result, user: req.user[0] });
       }
     });
   } else {
@@ -67,7 +70,7 @@ router.get("/assignment/:assignmentid", function (req, res) {
 
     let assignmentid = req.params.assignmentid;
 
-    let sql = `SELECT * from assignment where id = ?`;
+    let sql = `SELECT * from nb_assignments where id = ?`;
 
     let query = db.query(sql, assignmentid, (err, result) => {
       if (err) {
@@ -88,14 +91,14 @@ router.post("/addAssignment", function (req, res) {
 
   const subject = req.body.subject;
   const topic = req.body.topic;
-  const assignment = req.body.assignment;
+  const body = req.body.assignmentBody;
   const newAssignment = {
     subject: subject,
     topic: topic,
-    assignment: assignment
+    body: body
   };
 
-  let sql = `INSERT INTO assignment SET ?`;
+  let sql = `INSERT INTO nb_assignments SET ?`;
   let query = db.query(sql,
     newAssignment, (err, rows) => {
       if (err) {
@@ -127,7 +130,7 @@ router.get('/auth/google/notebook', passport.authenticate('google', { failureRed
     res.redirect('/dashboard');
   });
 
-router.get("/teacher/addAssignment", function (req, res) {
+router.get("/addAssignment", function (req, res) {
   if(req.isAuthenticated()){
   res.render("addAssignment");
   }else{
@@ -135,4 +138,4 @@ router.get("/teacher/addAssignment", function (req, res) {
   }
 })
 
-module.exports = router
+module.exports = router;
