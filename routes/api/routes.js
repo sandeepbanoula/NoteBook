@@ -49,13 +49,12 @@ router.get('/dashboard', function (req, res) {
 
   if (req.isAuthenticated()) {
 
-    let sql = `SELECT * FROM nb_assignments`;
+    let sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
     let query = db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
-      } else {
-  
-        res.render("dashboard", { result: result, user: req.user[0] });
+      } else {   
+            res.render("dashboard", { result: result, user: req.user[0] });
       }
     });
   } else {
@@ -92,10 +91,14 @@ router.post("/addAssignment", function (req, res) {
   const subject = req.body.subject;
   const topic = req.body.topic;
   const body = req.body.assignmentBody;
+  const start_dt = req.body.start_dt;
+  const end_dt = req.body.end_dt;
   const newAssignment = {
     subject: subject,
     topic: topic,
-    body: body
+    body: body,
+    start_dt: start_dt,
+    end_dt: end_dt
   };
 
   let sql = `INSERT INTO nb_assignments SET ?`;
@@ -132,7 +135,14 @@ router.get('/auth/google/notebook', passport.authenticate('google', { failureRed
 
 router.get("/addAssignment", function (req, res) {
   if(req.isAuthenticated()){
-  res.render("addAssignment");
+    let sql = `SELECT * FROM nb_subjects`;
+    db.query(sql, (err, result) => {
+      if(err){
+        throw(err);
+      }else{
+        res.render("addAssignment", {user: req.user[0], subjects: result});
+      }
+    });
   }else{
     res.redirect("/login");
   }

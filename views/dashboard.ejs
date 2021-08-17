@@ -25,12 +25,47 @@
 <!-- <div class="container-fluid"> -->
 <!-- <div class="row"> -->
 
+ 
   
 
   <main>
     <%- include('partials/sidebarMenu'); -%>
+    
+    <div class="d-flex flex-column flex-grow-1 bg-light">
 
-    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light">
+      <header class="p-3 border-bottom">
+        <div class="container">
+          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <form class="d-none d-sm-inline-block me-lg-auto">
+              <div class="input-group input-group-navbar">
+                <input type="text" class="form-control" placeholder="Search projects…" aria-label="Search">
+                <!-- <button class="btn" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search align-middle"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button> -->
+              </div>
+            </form>
+    
+            <div class="dropdown text-end">
+              <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="<%=user.pic%>" alt="mdo" width="32" height="32" class="rounded-circle">
+                <strong><%=user.name%></strong>
+              </a>
+              <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="#">New project...</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Sign out</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="p-3 scrollable">
       <h1 class="h2">Assignment Dashboard</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
@@ -42,20 +77,21 @@
           This week
         </button>
       </div>
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 py-3">
+      <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
         <% result.forEach(function(element){ %>
           <div class="col">
-            <div class="card mt-3" style="width: 18rem">
-              <div class="card-header"><%=element.subject%></div>
+            <div class="card card-cover h-100 overflow-hidden rounded-5 shadow-lg" style="background-color:<%=element.color%>;">
+              <div class="card-header"><%=element.name%></div>
               <div class="card-body">
                 <h5 class="card-title">Assignment #<%=element.id%></h5>
                 <p class="card-text"><%=element.topic%></p>
-                <a href="/assignment/<%=element.id%>" class="btn btn-primary">Submit Now</a>
+                <a href="/assignment/<%=element.id%>" class="btn btn-primary stretched-link">Submit Now</a>
               </div>
             </div>
           </div>
           <%  }); %>
         
+      </div>
       </div>
     </div>
   

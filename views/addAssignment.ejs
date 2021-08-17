@@ -1,26 +1,101 @@
 <%- include('partials/header'); -%>
 
-<div class="container-xl">
-  <!-- Navbar-Section -->
-  <nav class="navbar navbar-expand navbar-light mt-5">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/#">
-        <img src="/images/LOGO.svg" alt="Notebook-logo" class="logo" />
-        <strong>NOTEBOOK</strong>
-      </a>
-      <div class="ml-auto">
-        <ul class="navbar-nav">
-          <li class="nav-item get-started">
-            <a class="nav-link active px-3" aria-current="page" href="/logout"
-              >LogOut</a
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+<main>
+  <%- include('partials/sidebarMenu'); -%>
+  
+  <div class="d-flex flex-column flex-grow-1 bg-light">
 
-  <div class="container-fluid">
+    <header class="p-3 border-bottom">
+      <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+          <form class="d-none d-sm-inline-block me-lg-auto">
+            <div class="input-group input-group-navbar">
+              <input type="text" class="form-control" placeholder="Search projects…" aria-label="Search">
+              <!-- <button class="btn" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search align-middle"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </button> -->
+            </div>
+          </form>
+  
+          <div class="dropdown text-end">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="<%=user.pic%>" alt="mdo" width="32" height="32" class="rounded-circle">
+              <strong><%=user.name%></strong>
+            </a>
+            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+              <li><a class="dropdown-item" href="#">New project...</a></li>
+              <li><a class="dropdown-item" href="#">Settings</a></li>
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Sign out</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="p-3 scrollable">
+    <h1 class="h2 mb-3 border-bottom">Add Assignments</h1> 
+      
+      <form action="/addAssignment" method="post">
+        
+        <div class="form-group">
+          <select class="form-select" name="subject" required>
+            <option value="">Select Subject</option>
+            <% subjects.forEach(function(element){ %>
+            <option value="<%=element.id%>" style="background-color:<%=element.color%> "><%=element.name%></option>
+            <%  }); %>
+          </select>
+        </div>
+
+        <div class="form-floating mt-3">
+          <input id="topic" class="form-control" type="text" name="topic" placeholder="Enter Title" />
+          <label for="topic">Title</label>
+        </div>
+        
+        <div class="form-group row mt-3">
+          <div class="col-md-6">
+            <label class="form-label">Start Date</label>
+					  <input class="form-control" id="start_dt" type="text" name="start_dt" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">End Date</label>
+					  <input class="form-control" id="end_dt" type="text" name="end_dt" />
+          </div>
+      </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label" for="assignment-body">Assignment Body</label>
+          <textarea
+            id="assignment-body"
+            class="form-control"
+            name="assignmentBody"
+            placeholder="Write a program..."
+            rows="11"
+          ></textarea>
+        </div>
+
+        <button class="btn btn-primary mt-3" type="submit" name="Assign">
+          Assign
+        </button>
+      </form>
+    
+   
+    </div>
+  </div>
+
+    
+
+
+</main>
+
+
+
+  <!-- <div class="container-fluid">
     <div class="py-5">
       <h1>Add Assignment</h1>
 
@@ -58,7 +133,35 @@
         </button>
       </form>
     </div>
-  </div>
-</div>
+  </div> -->
+<script>
+  $("#start_dt").daterangepicker({
+        singleDatePicker: true,
+				timePicker: true,
+        timePicker24Hour: true,
+				startDate: moment().startOf("minute"),
+				locale: {
+					format: "YYYY-MM-DD HH:MM:SS"
+				}
+			},
+      function(start, end, label) {
+  console.log('New date range selected: ' + start.format('YYYY-MM-DD hh:mm:ss') + ' to ' + end.format('YYYY-MM-DD hh:mm:ss') + ' (predefined range: ' + label + ')');
+console.log($("#start_dt").val());
+});
+
+$("#end_dt").daterangepicker({
+        singleDatePicker: true,
+				timePicker: true,
+        timePicker24Hour: true,
+				startDate: moment().startOf("hour").add(5, "day"),
+				locale: {
+					format: "YYYY-MM-DD HH:MM:SS"
+				}
+			},
+      function(start, end, label) {
+  console.log('New date range selected: ' + start.format('YYYY-MM-DD hh:mm:ss') + ' to ' + end.format('YYYY-MM-DD hh:mm:ss') + ' (predefined range: ' + label + ')');
+console.log($("#start_dt").val());
+});
+</script>
 
 <%- include('partials/footer'); -%>
