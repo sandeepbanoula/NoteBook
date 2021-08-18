@@ -1,39 +1,19 @@
 <%- include('partials/header'); -%>
 
-<div class="container-xl">
-  <!-- Navbar-Section -->
-  <nav class="navbar navbar-expand navbar-light mt-5">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/#">
-        <img src="/images/LOGO.svg" alt="Notebook-logo" class="logo" />
-        <strong>NOTEBOOK</strong>
-      </a>
-      <div class="ml-auto">
-        <ul class="navbar-nav">
-          <li class="nav-item get-started">
-            <a class="nav-link active px-3" aria-current="page" href="/logout"
-              >LogOut</a
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+<main id="body-pd" class="body-pd">
+  <%- include('partials/sidebarMenu'); -%>
+  <div class="d-flex flex-column flex-grow-1 bg-light">
 
-  <div class="container-fluid">
-    <div class="py-5">
-      <div class="pb-3">
-        <h5>
-          <b>Subject</b> <%=result.subject%> - <b>Assignmnet</b> #<%=result.id%>
-        </h5>
-        <h2><%=result.topic%></h2>
-        <div>
-          <%-result.body%>
-        </div>
-        
+    <div class="p-4">
+      <div class="row row-cols-1 row-cols-lg-2 justify-content-between mb-3">
+        <div class="col h2" style="color:<%=result.color%>">Subject - <%=result.name%></div>
+        <div class="col h3">Assignment #<%=result.id%></div>
       </div>
+      <div class="h5 mb-3"><%=result.topic%></div>
+        <div class="mb-3"><%-result.body%></div>
+      
       <hr />
-      <h2>Submit Assignment</h2>
+      <h4>Add images</h4>
 
       <form>
         <div class="form-group mt-3">
@@ -42,28 +22,16 @@
         </div>
 
         <div class="form-group mt-3">
-          <label for="formFileMultiple" class="form-label"
-            >Choose Assignment Images</label
-          >
-          <input
-            class="form-control"
-            type="file"
-            id="formFileMultiple"
-            multiple
-          />
+          <label for="formFileMultiple" class="form-label">Choose Assignment Images</label>
+          <input class="form-control" type="file" id="formFileMultiple" multiple />
         </div>
 
-        <a
-          class="btn btn-primary mt-3"
-          type="submit"
-          href="/dashboard"
-          name="Submit"
-        >
-          Assign
+        <a class="btn btn-primary mt-3" type="submit" href="/dashboard" name="Submit">
+          Submit
         </a>
       </form>
     </div>
   </div>
-</div>
+</main>
 
 <%- include('partials/footer'); -%>

@@ -51,7 +51,7 @@ passport.use(new GoogleStrategy({
     let sql = `SELECT * FROM nb_users WHERE g_id = ?`;
     db.query(sql, profile.id, (err, result) => {
 
-    
+
       if (err) {
         return cb(err);
       } else if (result.length) {

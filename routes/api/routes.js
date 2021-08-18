@@ -5,7 +5,7 @@ const passport = require('passport');
 const router = express.Router();
 
 //start route to create tables
-router.get('/start', function(req, res){
+router.get('/start', function (req, res) {
   let sql = `SELECT * FROM assignment`;
   let query = db.query(sql, (err, result) => {
     if (err) {
@@ -53,8 +53,8 @@ router.get('/dashboard', function (req, res) {
     let query = db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
-      } else {   
-            res.render("dashboard", { result: result, user: req.user[0] });
+      } else {
+        res.render("dashboard", { result: result, user: req.user[0] });
       }
     });
   } else {
@@ -69,14 +69,15 @@ router.get("/assignment/:assignmentid", function (req, res) {
 
     let assignmentid = req.params.assignmentid;
 
-    let sql = `SELECT * from nb_assignments where id = ?`;
+    let sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ? AND (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
 
     let query = db.query(sql, assignmentid, (err, result) => {
       if (err) {
         console.log(err);
-      } else {
-        res.render("assignment", { result: result[0] });
-
+      } else if(result.length){
+        res.render("assignment", { result: result[0], user: req.user[0] });
+      } else{
+        res.redirect("/dashboard");
       }
     })
   } else {
@@ -88,6 +89,7 @@ router.get("/assignment/:assignmentid", function (req, res) {
 //route for adding assignment for teacher
 router.post("/addAssignment", function (req, res) {
 
+  if (req.isAuthenticated()) {
   const subject = req.body.subject;
   const topic = req.body.topic;
   const body = req.body.assignmentBody;
@@ -111,11 +113,14 @@ router.post("/addAssignment", function (req, res) {
       }
 
     })
-})
+  }else{
+    res.redirect("/login");
+  }
+});
 
 
 //define the logout page route
-router.get('/logout', function (req, res) {
+router.get('/signout', function (req, res) {
   req.logout();
   res.redirect("/");
 })
@@ -134,16 +139,16 @@ router.get('/auth/google/notebook', passport.authenticate('google', { failureRed
   });
 
 router.get("/addAssignment", function (req, res) {
-  if(req.isAuthenticated()){
+  if (req.isAuthenticated()) {
     let sql = `SELECT * FROM nb_subjects`;
     db.query(sql, (err, result) => {
-      if(err){
-        throw(err);
-      }else{
-        res.render("addAssignment", {user: req.user[0], subjects: result});
+      if (err) {
+        throw (err);
+      } else {
+        res.render("addAssignment", { user: req.user[0], subjects: result });
       }
     });
-  }else{
+  } else {
     res.redirect("/login");
   }
 })
