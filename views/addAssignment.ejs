@@ -8,7 +8,7 @@
     <div class="p-4">
       <h2 class="mb-3 border-bottom">Add Assignments</h2>
 
-      <form action="/addAssignment" method="post">
+      <form action="/assignment/add" method="post">
 
         <div class="form-group">
           <select class="form-select" name="subject" required>
@@ -53,24 +53,31 @@
 
 <script>
   $("#start_dt").daterangepicker({
-      singleDatePicker: true,
-      timePicker: true,
-      timePicker24Hour: true,
-      startDate: moment().startOf("minute"),
-      locale: {
-        format: "YYYY-MM-DD HH:MM:SS"
-      }
-    });
+    singleDatePicker: true,
+    timePicker: true,
+    timePicker24Hour: true,
+    startDate: moment().startOf("minute"),
+    locale: {
+      format: "YYYY-MM-DD HH:mm:ss"
+    }
+  });
 
   $("#end_dt").daterangepicker({
-      singleDatePicker: true,
-      timePicker: true,
-      timePicker24Hour: true,
-      startDate: moment().startOf("hour").add(5, "day"),
-      locale: {
-        format: "YYYY-MM-DD HH:MM:SS"
-      }
-    });
+    singleDatePicker: true,
+    timePicker: true,
+    timePicker24Hour: true,
+    startDate: moment().startOf("minute").add(5, "day"),
+    locale: {
+      format: "YYYY-MM-DD HH:mm:ss"
+    }
+  });
+
+  // Prevent Bootstrap dialog from blocking focusin
+  $(document).on('focusin', function (e) {
+    if ($(e.target).closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
+      e.stopImmediatePropagation();
+    }
+  });
 </script>
 
 <%- include('partials/footer'); -%>

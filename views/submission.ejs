@@ -1,0 +1,15 @@
+<%- include('partials/header'); -%>
+
+<main id="body-pd" class="body-pd">
+    <%- include('partials/sidebarMenu'); -%>
+    <div class="d-flex flex-column flex-grow-1 bg-light">
+        <div class="p-4">
+            <% result.forEach(function(element, index){ %>
+                <img src="data:<%= element.imageType %>;base64,<%= element.imageBase64 %>" alt="<%= element.imageName %>">
+            <% }) %>
+        </div>
+    </div>
+
+</main>
+
+<%- include('partials/footer'); -%>

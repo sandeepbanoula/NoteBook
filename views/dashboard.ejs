@@ -1,42 +1,13 @@
 <%- include('partials/header'); -%>
 
-<main class="body-pd" id="body-pd">
-  <%- include('partials/sidebarMenu'); -%>
-
-  <div class="d-flex flex-column flex-grow-1 bg-light">
-    <div class="p-4">
-      <h2>Assignment Dashboard</h2>
-      <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-          <button type="button" class="btn btn-sm btn-outline-secondary">
-            Share
-          </button>
-          <button type="button" class="btn btn-sm btn-outline-secondary">
-            Export
-          </button>
+<main id="body-pd" class="body-pd">
+    <%- include('partials/sidebarMenu'); -%>
+    <div class="d-flex flex-column flex-grow-1 bg-light">
+        <div class="p-4">
+            
         </div>
-        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-          <span data-feather="calendar"></span>
-          This week
-        </button>
-      </div>
-      <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
-        <% result.forEach(function(element){ %>
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-          <div class="card card-cover h-100 overflow-hidden rounded-5 shadow-lg"
-            style="background-color: <%=element.color%>">
-            <div class="card-header"><%=element.name%></div>
-            <div class="card-body">
-              <h5 class="card-title">Assignment #<%=element.id%></h5>
-              <p class="card-text"><%=element.topic%></p>
-              <a href="/assignment/<%=element.id%>" class="btn btn-primary stretched-link">Submit Now</a>
-            </div>
-          </div>
-        </div>
-        <% }); %>
-      </div>
     </div>
-  </div>
+
 </main>
 
 <%- include('partials/footer'); -%>

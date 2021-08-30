@@ -18,7 +18,7 @@
       <li>
         <hr class="dropdown-divider">
       </li>
-      <li><a class="dropdown-item" href="#">Sign out</a></li>
+      <li><a class="dropdown-item" href="/signOut">Sign out</a></li>
     </ul>
   </div>
 </header>
@@ -31,14 +31,20 @@
         <span class="nav_logo-name">NoteBook</span>
       </a>
       <div class="nav_list">
-        <a href="/dashboard" class="nav_link active">
+        <a href="/dashboard" class="nav_link">
           <i class="bx bx-grid-alt nav_icon"></i>
           <span class="nav_name">Dashboard</span>
         </a>
-        <a href="/addAssignment" class="nav_link">
-          <i class="bx bx-user nav_icon"></i>
-          <span class="nav_name">Users</span>
+        <a href="/assignment" class="nav_link">
+          <i class="bx bx-folder nav_icon"></i>
+          <span class="nav_name">Assignments</span>
         </a>
+        <% if(user.view !== "asStudent"){ %>
+        <a href="/assignment/add" class="nav_link">
+          <i class="bx bx-user nav_icon"></i>
+          <span class="nav_name">Add Assignment</span>
+        </a>
+        <% } %>
         <a href="#" class="nav_link">
           <i class="bx bx-message-square-detail nav_icon"></i>
           <span class="nav_name">Messages</span>
@@ -46,10 +52,6 @@
         <a href="#" class="nav_link">
           <i class="bx bx-bookmark nav_icon"></i>
           <span class="nav_name">Bookmark</span>
-        </a>
-        <a href="#" class="nav_link">
-          <i class="bx bx-folder nav_icon"></i>
-          <span class="nav_name">Files</span>
         </a>
         <a href="#" class="nav_link">
           <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
@@ -63,3 +65,17 @@
     </a>
   </nav>
 </div>
+
+<script>
+ $(document).ready(function () {
+        var url = window.location;
+    // Will only work if string in href matches with location
+        $('.nav_list a[href="' + url + '"]').addClass('active');
+        
+
+    // Will also work for relative and absolute hrefs
+        $('.nav_list a').filter(function () {
+            return this.href == url;
+        }).addClass('active');
+    });
+</script>

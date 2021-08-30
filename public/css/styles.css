@@ -176,6 +176,8 @@ html {
   box-sizing: border-box
 }
 
+/* Sidebar Menu Styles */
+
 main {
   position: relative;
   margin: var(--header-height) 0 0 0;
@@ -325,4 +327,53 @@ a {
   .body-pd-header {
     padding-left: calc(var(--nav-width) + 188px)
   }
+}
+
+/* Drag and drop files */
+
+.drag-area{
+  border: 2px dashed #fff;
+  background-color: var(--first-color);
+  height: 250px;
+  width: 350px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.drag-area.active{
+  border: 2px solid #fff;
+}
+.drag-area .icon{
+  font-size: 50px;
+  color: #fff;
+}
+.drag-area header{
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+}
+.drag-area span{
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #fff;
+  margin: 10px 0 15px 0;
+}
+.drag-area button{
+  padding: 10px 25px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  outline: none;
+  background: #fff;
+  color: #5256ad;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.drag-area img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 5px;
 }

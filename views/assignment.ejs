@@ -9,29 +9,149 @@
         <div class="col h2" style="color:<%=result.color%>">Subject - <%=result.name%></div>
         <div class="col h3">Assignment #<%=result.id%></div>
       </div>
-      <div class="h5 mb-3"><%=result.topic%></div>
-        <div class="mb-3"><%-result.body%></div>
-      
+      <div class="row row-cols-1 row-cols-lg-2 justify-content-between mb-3">
+        <div class="col h6">Start : <%= result.start_dt %></div>
+        <div class="col h6">End : <%= result.end_dt %></div>
+      </div>
+      <div class="h4 mb-3"><%=result.topic%></div>
+      <div class="mb-3"><%-result.body%></div>
+
       <hr />
       <h4>Add images</h4>
 
-      <form>
+      <form action="/assignment/submit" method="POST" enctype="multipart/form-data">
+        <input type="text" name="assignmentId" value="<%=result.id%>" hidden />
+        <input type="text" name="subject" value="<%=result.name%>" hidden />
         <div class="form-group mt-3">
           <label for="comment">Add Text or Comment</label>
           <input id="comment" class="form-control" type="text" name="comment" />
         </div>
 
-        <div class="form-group mt-3">
-          <label for="formFileMultiple" class="form-label">Choose Assignment Images</label>
-          <input class="form-control" type="file" id="formFileMultiple" multiple />
+        <!-- <div class="form-group mt-3">
+          <label for="formFileMultiple" class="form-label">Select Multiple Images</label>
+          <input class="form-control" type="file" name="assignmentImages" id="input-files" multiple />
+        </div> -->
+
+        <div class="drag-area form-group mt-3">
+          <div class="icon"><i class='bx bxs-cloud-upload'></i></div>
+          <header>Drag & Drop to Upload File</header>
+          <span>OR</span>
+          <button class="browseFiles" type="button">Browse File</button>
+          <input class="form-control" id="input-files" type="file" name="assignmentImages" multiple hidden />
         </div>
 
-        <a class="btn btn-primary mt-3" type="submit" href="/dashboard" name="Submit">
+        <button class="btn btn-primary mt-3" type="submit" name="Submit">
           Submit
-        </a>
+        </button>
       </form>
+      <div class="row">
+        <div class="col preview-images" id="#sortable">
+          <!-- <div class="preview-images"></div> -->
+        </div>
+      </div>
+      <hr />
+      <% if (user.view!=="asStudent") { %>
+      <h3>Submissions</h3>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Date</th>
+            <th scope="col">View</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% sub.forEach(function(element, index){ %>
+          <tr>
+            <th scope="row"><%=index+1%></th>
+            <td><%=element.name%></td>
+            <td><%=element.submitted%></td>
+            <td><a href="/assignment/view/<%=element.assignment_id%>/<%=element.user_id%>">View</a></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <% } %>
+
     </div>
   </div>
+
 </main>
 
+<script>
+  //selecting all required elements
+  const dropArea = document.querySelector(".drag-area"),
+    dragText = dropArea.querySelector("header"),
+    button = dropArea.querySelector("button"),
+    input = dropArea.querySelector("#input-files");
+  let file; //this is a global variable and we'll use it inside multiple functions
+
+  document.querySelector(".drag-area").onclick = () => {
+    input.click(); //if user click on the drag-area then the input also clicked
+  }
+
+  input.addEventListener("change", function () {
+    imagesPreview(this, "div.preview-images");
+  });
+
+  //If user Drag File Over DropArea
+  dropArea.addEventListener("dragover", (event) => {
+    event.preventDefault(); //preventing from default behaviour
+    dropArea.classList.add("active");
+    dragText.textContent = "Release to Upload File";
+  });
+
+  //If user leave dragged File from DropArea
+  dropArea.addEventListener("dragleave", () => {
+    dropArea.classList.remove("active");
+    dragText.textContent = "Drag & Drop to Upload File";
+  });
+
+  //If user drop File on DropArea
+  dropArea.addEventListener("drop", (event) => {
+    event.preventDefault(); //preventing from default behaviour
+    dropArea.classList.remove("active");
+    dragText.textContent = "Drag & Drop to Upload File";
+    file = event.dataTransfer;
+    input.files = (event.dataTransfer.files);
+    imagesPreview(file, "div.preview-images");
+
+  });
+
+  let i, fileType, storedFiles = [];;
+  let validExtensions = ["image/jpeg", "image/jpg", "image/png"];
+
+  let imagesPreview = function (input, placeToInsertImagePreview) {
+    if (input.files) {
+      var filesAmount = input.files.length;
+
+      for (i = 0; i < filesAmount; i++) {
+        fileType = input.files[i].type;
+
+        if (validExtensions.includes(fileType)) {
+        
+          let fileReader = new FileReader(); //creating new FileReader object
+          fileReader.onload = function (event) {
+
+            $($.parseHTML("<img>"))
+            .addClass("img-thumbnail")
+              .attr({
+                "src": event.target.result,
+                "width": "250",
+                "height": "300",
+              })
+              .appendTo(placeToInsertImagePreview);
+          };
+          fileReader.readAsDataURL(input.files[i]);
+
+        } else {
+          alert("This is not an Image File!");
+          dropArea.classList.remove("active");
+          dragText.textContent = "Drag & Drop to Upload File";
+        }
+      }
+    }
+  }
+</script>
 <%- include('partials/footer'); -%>

@@ -1,6 +1,8 @@
 const express = require('express');
 const db = require('../../database/db');
 const passport = require('passport');
+const controller = require('../../server/controller/controller');
+const store = require('../../server/middleware/upload');
 
 const router = express.Router();
 
@@ -43,9 +45,16 @@ router.get('/login', function (req, res) {
     res.render("login");
   }
 });
+router.get('/dashboard', function (req, res) {
+  if (req.isAuthenticated()) {
+    res.render("dashboard", { user: req.user[0] });
+  } else {
+    res.redirect("login");
+  }
+});
 
 //defines the dashboard route
-router.get('/dashboard', function (req, res) {
+router.get('/assignment', function (req, res) {
 
   if (req.isAuthenticated()) {
 
@@ -54,7 +63,7 @@ router.get('/dashboard', function (req, res) {
       if (err) {
         console.log(err);
       } else {
-        res.render("dashboard", { result: result, user: req.user[0] });
+        res.render("assignmentBoard", { result: result, user: req.user[0] });
       }
     });
   } else {
@@ -63,7 +72,7 @@ router.get('/dashboard', function (req, res) {
 });
 
 // defines assignment specific route
-router.get("/assignment/:assignmentid", function (req, res) {
+router.get("/assignment/view/:assignmentid", function (req, res) {
 
   if (req.isAuthenticated()) {
 
@@ -74,10 +83,21 @@ router.get("/assignment/:assignmentid", function (req, res) {
     let query = db.query(sql, assignmentid, (err, result) => {
       if (err) {
         console.log(err);
-      } else if(result.length){
-        res.render("assignment", { result: result[0], user: req.user[0] });
-      } else{
-        res.redirect("/dashboard");
+      } else if (result.length) {
+        if (req.user[0].view !== "asStudent") {
+          sql = `SELECT DISTINCT(sub.user_id),user.name, sub.submitted, sub.assignment_id FROM nb_submissions AS sub JOIN nb_users AS user WHERE sub.user_id = user.id AND assignment_id = ?;`;
+          db.query(sql, assignmentid, (err, submissions) => {
+            if (err) {
+              console.log(err);
+            } else {
+              res.render("assignment", { result: result[0], user: req.user[0], sub: submissions });
+            }
+          });
+        } else {
+          res.render("assignment", { result: result[0], user: req.user[0] });
+        }
+      } else {
+        res.redirect("/assignment");
       }
     })
   } else {
@@ -87,33 +107,37 @@ router.get("/assignment/:assignmentid", function (req, res) {
 });
 
 //route for adding assignment for teacher
-router.post("/addAssignment", function (req, res) {
+router.post("/assignment/add", function (req, res) {
 
   if (req.isAuthenticated()) {
-  const subject = req.body.subject;
-  const topic = req.body.topic;
-  const body = req.body.assignmentBody;
-  const start_dt = req.body.start_dt;
-  const end_dt = req.body.end_dt;
-  const newAssignment = {
-    subject: subject,
-    topic: topic,
-    body: body,
-    start_dt: start_dt,
-    end_dt: end_dt
-  };
+    if (req.user[0].view !== "asStudent") {
+      const subject = req.body.subject;
+      const topic = req.body.topic;
+      const body = req.body.assignmentBody;
+      const start_dt = req.body.start_dt;
+      const end_dt = req.body.end_dt;
+      const newAssignment = {
+        subject: subject,
+        topic: topic,
+        body: body,
+        start_dt: start_dt,
+        end_dt: end_dt
+      };
 
-  let sql = `INSERT INTO nb_assignments SET ?`;
-  let query = db.query(sql,
-    newAssignment, (err, rows) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.redirect("/dashboard");
-      }
+      let sql = `INSERT INTO nb_assignments SET ?`;
+      let query = db.query(sql,
+        newAssignment, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            res.redirect("/assignment");
+          }
 
-    })
-  }else{
+        })
+    } else {
+      res.redirect("/assignment")
+    }
+  } else {
     res.redirect("/login");
   }
 });
@@ -122,7 +146,7 @@ router.post("/addAssignment", function (req, res) {
 //define the logout page route
 router.get('/signout', function (req, res) {
   req.logout();
-  res.redirect("/");
+  res.redirect("/login");
 })
 
 // define the about route
@@ -138,19 +162,54 @@ router.get('/auth/google/notebook', passport.authenticate('google', { failureRed
     res.redirect('/dashboard');
   });
 
-router.get("/addAssignment", function (req, res) {
+router.get("/assignment/add", function (req, res) {
   if (req.isAuthenticated()) {
-    let sql = `SELECT * FROM nb_subjects`;
-    db.query(sql, (err, result) => {
-      if (err) {
-        throw (err);
-      } else {
-        res.render("addAssignment", { user: req.user[0], subjects: result });
-      }
-    });
+    if (req.user[0].view !== "asStudent") {
+      let sql = `SELECT * FROM nb_subjects`;
+      db.query(sql, (err, result) => {
+        if (err) {
+          throw (err);
+        } else {
+          res.render("addAssignment", { user: req.user[0], subjects: result });
+        }
+      });
+    } else {
+      res.redirect("/assignment");
+    }
   } else {
     res.redirect("/login");
   }
-})
+});
+
+// defines assignment specific route
+router.get("/assignment/view/:assignmentid/:userid", function (req, res) {
+
+  if (req.isAuthenticated()) {
+    if (req.user[0].view !== "asStudent") {
+
+      let assignmentid = req.params.assignmentid;
+      let userid = req.params.userid;
+
+      let sql = `SELECT * FROM nb_submissions where assignment_id = ? AND user_id = ?;`;
+
+      db.query(sql, [assignmentid, userid], (err, result) => {
+        if (err) {
+          console.log(err);
+        } else if (result.length) {
+          res.render("submission", { result: result, user: req.user[0] });
+        } else {
+          res.redirect("/assignment");
+        }
+      })
+    } else {
+      res.redirect("/assignment");
+    }
+  } else {
+    res.redirect("/login");
+  }
+
+});
+
+router.post("/assignment/submit", store.array('assignmentImages', 12), controller.uploads);
 
 module.exports = router;
