@@ -7,15 +7,31 @@ const store = require('../../server/middleware/upload');
 const router = express.Router();
 
 //start route to create tables
-router.get('/start', function (req, res) {
-  let sql = `SELECT * FROM assignment`;
-  let query = db.query(sql, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.render("dashboard", { result: result });
+router.get("/settings", function (req, res) {
+  if (req.isAuthenticated()) {
+    if(req.user[0].view === "asAdmin"){
+      let sql = `SELECT * FROM nb_users ORDER BY name;`;
+      db.query(sql, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          sql = `SELECT * FROM nb_subjects ORDER BY name;`;
+          db.query(sql, (err, subjects) => {
+            if(err){
+              console.log(err);
+            }else{
+              res.render("settings", { user: req.user[0], result: result, subjects: subjects });
+            }
+          });
+        }
+      });
+    }else{
+      res.render("settings", { user: req.user[0] });
     }
-  });
+  } else {
+    res.redirect("login");
+  }
+
 });
 
 // middleware that is specific to this router
@@ -154,7 +170,7 @@ router.get('/about', function (req, res) {
   res.send('About Us')
 })
 
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+router.get('/auth/google', passport.authenticate('google', { scope: ["profile", "email"] }));
 
 router.get('/auth/google/notebook', passport.authenticate('google', { failureRedirect: '/login' }),
   function (req, res) {

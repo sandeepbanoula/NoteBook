@@ -1,0 +1,270 @@
+<%- include('partials/header'); -%>
+
+<main id="body-pd" class="body-pd">
+    <%- include('partials/sidebarMenu'); -%>
+    <div class="d-flex flex-column flex-grow-1 flex-wrap bg-light">
+        <div class="p-4">
+
+            <div class="row">
+                <div class="col-md-3 col-xl-2">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Profile Settings</h5>
+                        </div>
+
+                        <div class="list-group list-group-flush" role="tablist">
+                            <a class="list-group-item list-group-item-action active" data-bs-toggle="list"
+                                href="#account" role="tab">
+                                Account
+                            </a>
+
+                            <% if(user.view === "asAdmin" ){ %>
+
+                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#users"
+                                role="tab">
+                                Users
+                            </a>
+                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#subjects"
+                                role="tab">
+                                Subjects
+                            </a>
+
+                            <% } %>
+
+                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
+                                Notifications
+                            </a>
+                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
+                                Web notifications
+                            </a>
+                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
+                                Widgets
+                            </a>
+                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
+                                Your data
+                            </a>
+                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
+                                Delete account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9 col-xl-10">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="account" role="tabpanel">
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Your information</h5>
+                                    <form action="/profile" method="POST">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="mb-3">
+                                                    <label for="name" class="form-label">Name</label>
+                                                    <input type="text" class="form-control" placeholder="Your full name"
+                                                        value="<%=user.name%>" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label">Email</label>
+                                                    <input type="text" class="form-control"
+                                                        placeholder="<%=user.email%>" disabled>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <label for="name" class="form-label">Access as:
+                                                        <%=(user.view).substr(2)%></label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="text-center">
+                                                    <img alt="<%=user.name%>" src="<%=user.pic%>"
+                                                        class="rounded-circle img-responsive mt-2 border border-dark"
+                                                        width="128" height="128">
+
+                                                    <div class="mt-2">Your profile pic</div>
+                                                    <small>Your image is fetched from your google account.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </form>
+                                    <div class="alert alert-primary d-flex flex-column mt-3" role="alert">
+                                        <h6>Note:</h6>
+                                        <p>1. Name, email and user image is fetched from google amount linked.</p>
+                                        <p>2. Only user name can be changed.</p>
+                                        <p>3. Profile photo will be automatically fetched from google when updated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% if(user.view === "asAdmin" ){ %>
+                        <!-- Users and ROles Tab -->
+                        <div class="tab-pane fade" id="users" role="tabpanel">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-8">
+                                            <h5 class="card-title">Users & Roles</h5>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" id="userInput"
+                                                onkeyup="searchFunction()" placeholder="Search users by name"
+                                                aria-label="Search users">
+                                        </div>
+                                    </div>
+
+
+                                    <form action="/users" method="POST">
+                                        <table class="table" id="userTable">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Access level</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% result.forEach((element, index)=>{ %>
+                                                <tr>
+                                                    <th scope="row"><%= index+1 %></th>
+                                                    <td>
+                                                        <img src="<%=element.pic%>" alt="mdo" width="32" height="32"
+                                                            class="rounded-circle"> <%=element.name%></td>
+                                                    <td>
+                                                        <select class="form-select w-50"
+                                                            aria-label="Select users access level" required>
+                                                            <option value="asAdmin"
+                                                                <%= element.view === "asAdmin"? "selected" : "" %>>Admin
+                                                            </option>
+                                                            <option value="asTeacher"
+                                                                <%= element.view === "asTeacher"? "selected" : "" %>>
+                                                                Teacher</option>
+                                                            <option value="asStudent"
+                                                                <%= element.view === "asStudent"? "selected" : "" %>>
+                                                                Student</option>
+                                                        </select>
+                                                    </td>
+
+                                                </tr>
+                                                <% }); %>
+
+                                            </tbody>
+                                        </table>
+
+
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </form>
+                                    <div class="alert alert-primary d-flex flex-column mt-3" role="alert">
+                                        <h6>Note:</h6>
+                                        <p>1. Student is the lowest access level.</p>
+                                        <p>2. A teacher has view of student access level.</p>
+                                        <p>3. Admin has both views of teacher and student access levels.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subjects Tab -->
+                        <div class="tab-pane fade" id="subjects" role="tabpanel">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-8">
+                                            <h5 class="card-title">Subjects</h5>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" id="subjectInput"
+                                                onkeyup="subSeacrchFn()" placeholder="Search subjects"
+                                                aria-label="Search subjects">
+                                        </div>
+                                    </div>
+
+
+                                    <form action="/users" method="POST">
+                                        <table class="table" id="subjectTable">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Subject</th>
+                                                    <th scope="col">Color</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% subjects.forEach((element, index)=>{ %>
+                                                <tr>
+                                                    <th scope="row"><%= index+1 %></th>
+                                                    <td><%=element.name%></td>
+                                                    <td>
+                                                        <input type="color" class="form-control form-control-color" value="<%=element.color%>" title="Choose your color">
+                                                    </td>
+                                                </tr>
+                                                <% }); %>
+
+                                            </tbody>
+                                        </table>
+
+
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<%- include('partials/footer'); -%>
+
+<script>
+    function searchFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("userInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("userTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function subSeacrchFn(){
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("subjectInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("subjectTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

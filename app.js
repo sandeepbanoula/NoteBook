@@ -47,33 +47,29 @@ passport.use(new GoogleStrategy({
 },
 
   function (accessToken, refreshToken, profile, cb) {
-
+    
     let sql = `SELECT * FROM nb_users WHERE g_id = ?`;
     db.query(sql, profile.id, (err, result) => {
-
-
       if (err) {
         return cb(err);
       } else if (result.length) {
         return cb(null, result);
       }
       else {
-
-        let newUser = {
+        let user = {
+          email: profile.emails[0].value,
           name: profile.displayName,
           g_id: profile.id,
           pic: profile.photos[0].value,
           view: "asStudent"
         };
-        console.log(newUser);
         let sql = `INSERT INTO nb_users SET ?`;
         let query = db.query(sql,
-          newUser, (err, rows) => {
+          user, (err, rows) => {
             if (err) {
               console.log(err);
             }
-
-            return cb(null, newUser);
+            return cb(null, [user]);
           })
       }
     });
