@@ -1,6 +1,11 @@
 const fs = require("fs");
 const db = require('../../database/db');
 
+// Home route
+exports.home = (req, res) => {
+  res.render('home');
+}
+
 exports.uploads = (req, res, next) => {
 
   const files = req.files;

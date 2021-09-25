@@ -5,24 +5,34 @@
 
   <div class="d-flex flex-column flex-grow-1 bg-light">
     <div class="p-4">
-      <h2>Assignment Dashboard</h2>
-      <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-          <button type="button" class="btn btn-sm btn-outline-secondary">
-            Share
-          </button>
-          <button type="button" class="btn btn-sm btn-outline-secondary">
-            Export
-          </button>
+      <div class="row">
+        <div class="col">
+          <h2>Assignment Dashboard</h2>
         </div>
-        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-          <span data-feather="calendar"></span>
-          This week
-        </button>
+        <!-- <div class="col">
+          <button type="button" class="btn btn-sm btn-outline-primary" onclick="filterSelection('all')">
+            All assignments
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" onclick="filterSelection('active')">
+            Active
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary" onclick="filterSelection('inactive')">
+            Inactive
+          </button>
+        </div> -->
       </div>
-      <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
+      <% if(user.view != "asStudent"){ %>
+      <div class="btn-toolbar mb-2 mb-md-0"> 
+          <a type="button" href="/assignment/add" class="btn btn-sm btn-outline-secondary">
+            Add assignment
+          </a>
+      </div>
+      <% } %>
+      <div id="assignmentCard" class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
         <% result.forEach(function(element){ %>
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 cardSingle">
+          <span class="d-none"><%= element.start_dt %></span>
+          <span class="d-none"><%= element.end_dt %></span>
           <div class="card card-cover h-100 overflow-hidden rounded-5 shadow-lg"
             style="background-color: <%=element.color%>">
             <div class="card-header"><%=element.name%></div>
@@ -38,5 +48,40 @@
     </div>
   </div>
 </main>
+
+<!-- <script>
+  filterSelection("active");
+  function filterSelection(e) {
+    // Declare variables
+    var container, div, span0, span1, currentTime, txtValue0, textValue1, i;
+    container = document.getElementById('assignmentCard');
+    div = document.getElementsByClassName("cardSingle");
+    currentTime = new Date();
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < div.length; i++) {
+
+      span0 = div[i].getElementsByTagName("span")[0];
+      span1 = div[i].getElementsByTagName("span")[1];
+      txtValue0 = span0.textContent || span0.innerText;
+      txtValue1 = span1.textContent || span1.innerText;
+
+      console.log( new Date(Date.parse(txtValue0)));
+      console.log(txtValue1);
+      console.log(currentTime);
+      if(e=="all"){
+        div[i].style.display = "";
+      } else if (e=="active" && (currentTime <= new Date(Date.parse(txtValue0)) && currentTime >= new Date(Date.parse(txtValue1)))) {
+        console.log("dd");
+        div[i].style.display = "";
+
+      }else if(e=="inactive" && (new Date(txtValue0)<currentTime || new Date(textValue1)>currentTime)){
+        div[i].style.display = "";
+      } else{
+        div[i].style.display = "none";
+      }
+    }
+  }
+  </script> -->
 
 <%- include('partials/footer'); -%>

@@ -1,10 +1,5 @@
 <header class="header body-pd-header" id="header">
   <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
-  <!-- <form class="d-none d-sm-inline-block me-lg-auto mx-3">
-    <div class="input-group input-group-navbar">
-      <input type="text" class="form-control" placeholder="Search assignments" aria-label="Search">
-    </div>
-  </form> -->
   <div class="dropdown text-end">
     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
       data-bs-toggle="dropdown" aria-expanded="false">
@@ -12,9 +7,7 @@
       <strong><%=user.name%></strong>
     </a>
     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-      <li><a class="dropdown-item" href="#">New project...</a></li>
-      <li><a class="dropdown-item" href="#">Settings</a></li>
-      <li><a class="dropdown-item" href="#">Profile</a></li>
+      <li><a class="dropdown-item" href="/settings">Settings</a></li>
       <li>
         <hr class="dropdown-divider">
       </li>
@@ -31,10 +24,10 @@
         <span class="nav_logo-name">NoteBook</span>
       </a>
       <div class="nav_list">
-        <a href="/dashboard" class="nav_link">
+        <!-- <a href="/dashboard" class="nav_link">
           <i class="bx bx-grid-alt nav_icon"></i>
           <span class="nav_name">Dashboard</span>
-        </a>
+        </a> -->
         <a href="/assignment" class="nav_link">
           <i class="bx bx-folder nav_icon"></i>
           <span class="nav_name">Assignments</span>
@@ -45,14 +38,6 @@
           <span class="nav_name">Add Assignment</span>
         </a>
         <% } %>
-        <a href="#" class="nav_link">
-          <i class="bx bx-message-square-detail nav_icon"></i>
-          <span class="nav_name">Messages</span>
-        </a>
-        <a href="#" class="nav_link">
-          <i class="bx bx-bookmark nav_icon"></i>
-          <span class="nav_name">Bookmark</span>
-        </a>
         <!-- bx-bar-chart-alt-2 -->
         <a href="/settings" class="nav_link">
           <i class="bx bx-cog nav_icon"></i>
@@ -68,15 +53,15 @@
 </div>
 
 <script>
- $(document).ready(function () {
-        var url = window.location;
+  $(document).ready(function () {
+    var url = window.location;
     // Will only work if string in href matches with location
-        $('.nav_list a[href="' + url + '"]').addClass('active');
-        
+    $('.nav_list a[href="' + url + '"]').addClass('active');
+
 
     // Will also work for relative and absolute hrefs
-        $('.nav_list a').filter(function () {
-            return this.href == url;
-        }).addClass('active');
-    });
+    $('.nav_list a').filter(function () {
+      return this.href == url;
+    }).addClass('active');
+  });
 </script>

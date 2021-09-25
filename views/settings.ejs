@@ -32,21 +32,6 @@
 
                             <% } %>
 
-                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
-                                Notifications
-                            </a>
-                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
-                                Web notifications
-                            </a>
-                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
-                                Widgets
-                            </a>
-                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
-                                Your data
-                            </a>
-                            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#" role="tab">
-                                Delete account
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -58,13 +43,13 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Your information</h5>
-                                    <form action="/profile" method="POST">
+                                    <form action="/edit/profile" method="POST">
                                         <div class="row">
                                             <div class="col-md-8">
                                                 <div class="mb-3">
-                                                    <label for="name" class="form-label">Name</label>
-                                                    <input type="text" class="form-control" placeholder="Your full name"
-                                                        value="<%=user.name%>" required>
+                                                    <label for="username" class="form-label">Name</label>
+                                                    <input type="text" class="form-control" name="username"
+                                                        placeholder="Your full name" value="<%=user.name%>" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="email" class="form-label">Email</label>
@@ -116,13 +101,14 @@
                                     </div>
 
 
-                                    <form action="/users" method="POST">
+                                    <form action="/edit/roles" method="POST">
                                         <table class="table" id="userTable">
                                             <thead>
                                                 <tr>
                                                     <th scope="col">#</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Access level</th>
+                                                    <!-- <th scope="col">Save</th> -->
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -133,7 +119,7 @@
                                                         <img src="<%=element.pic%>" alt="mdo" width="32" height="32"
                                                             class="rounded-circle"> <%=element.name%></td>
                                                     <td>
-                                                        <select class="form-select w-50"
+                                                        <select class="form-select w-50" name="<%=element.id%>"
                                                             aria-label="Select users access level" required>
                                                             <option value="asAdmin"
                                                                 <%= element.view === "asAdmin"? "selected" : "" %>>Admin
@@ -146,6 +132,7 @@
                                                                 Student</option>
                                                         </select>
                                                     </td>
+                                                    <!-- <td><button type="submit" class="btn btn-primary">Save</button></td> -->
 
                                                 </tr>
                                                 <% }); %>
@@ -176,13 +163,13 @@
                                         </div>
                                         <div class="col-md-4">
                                             <input type="text" class="form-control" id="subjectInput"
-                                                onkeyup="subSeacrchFn()" placeholder="Search subjects"
+                                                onkeyup="subSearchFn()" placeholder="Search subjects"
                                                 aria-label="Search subjects">
                                         </div>
                                     </div>
 
 
-                                    <form action="/users" method="POST">
+                                    <form action="/edit/subjects" method="POST">
                                         <table class="table" id="subjectTable">
                                             <thead>
                                                 <tr>
@@ -191,19 +178,31 @@
                                                     <th scope="col">Color</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="addSubject">
                                                 <% subjects.forEach((element, index)=>{ %>
                                                 <tr>
+                                                    <input type="text" value="<%=element.id%>" name="id" hidden>
                                                     <th scope="row"><%= index+1 %></th>
-                                                    <td><%=element.name%></td>
+                                                    <td><input class="form-control w-50" type="text" name="name"
+                                                            value="<%=element.name%>">
+                                                        <span style="display: none;"><%=element.name%></span>
+                                                        </td>
                                                     <td>
-                                                        <input type="color" class="form-control form-control-color" value="<%=element.color%>" title="Choose your color">
+                                                        <input type="color" class="form-control form-control-color"
+                                                            name="color" value="<%=element.color%>"
+                                                            title="Choose your color">
                                                     </td>
                                                 </tr>
                                                 <% }); %>
+                            
 
                                             </tbody>
                                         </table>
+                                        <div class="d-grid gap-2 mb-3">
+                                            <button type="button" class="btn btn-primary btn-lg"
+                                                onclick="addSubjects()"><i
+                                                    class='bx bx-plus-circle nav_icon'></i></button>
+                                        </div>
 
 
                                         <button type="submit" class="btn btn-primary">Save changes</button>
@@ -247,8 +246,8 @@
         }
     }
 
-    function subSeacrchFn(){
-        var input, filter, table, tr, td, i, txtValue;
+    function subSearchFn() {
+        var input, filter, table, tr, td, i, txtValue, inputsub;
         input = document.getElementById("subjectInput");
         filter = input.value.toUpperCase();
         table = document.getElementById("subjectTable");
@@ -266,5 +265,11 @@
                 }
             }
         }
+    }
+
+    function addSubjects() {
+        var html = '';
+        html+='<tr><td></td><td><input type="text" value="DEFAULT" name="id" hidden><input class="form-control w-50" type="text" name="name"></td><td><input type="color" class="form-control form-control-color" name="color"></td></tr>';
+        $('#addSubject').append(html);
     }
 </script>

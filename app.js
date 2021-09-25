@@ -18,7 +18,7 @@ app.use(express.urlencoded({
 app.use(express.static('public'));
 
 app.use(session({
-  secret: "NoteBook are use to keep notes.",
+  secret: process.env.APP_SESSIONS_SECRET,
   resave: false,
   saveUninitialized: false
 }));

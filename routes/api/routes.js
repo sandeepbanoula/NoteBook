@@ -6,26 +6,47 @@ const store = require('../../server/middleware/upload');
 
 const router = express.Router();
 
+// Home page Route
+router.get("/", controller.home);
+
+// define the signup page route
+router.get('/signup', function (req, res) {
+  if (req.isAuthenticated()) {
+    res.redirect("assignment");
+  } else {
+    res.render('signup');
+  }
+});
+
+// define the login page route
+router.get('/login', function (req, res) {
+  if (req.isAuthenticated()) {
+    res.redirect("assignment");
+  } else {
+    res.render("login");
+  }
+});
+
 //start route to create tables
 router.get("/settings", function (req, res) {
   if (req.isAuthenticated()) {
-    if(req.user[0].view === "asAdmin"){
-      let sql = `SELECT * FROM nb_users ORDER BY name;`;
-      db.query(sql, (err, result) => {
+    if (req.user[0].view === "asAdmin") {
+      let sql = `SELECT * FROM nb_users WHERE id != ? ORDER BY name ;`;
+      db.query(sql, req.user[0].id, (err, result) => {
         if (err) {
           console.log(err);
         } else {
           sql = `SELECT * FROM nb_subjects ORDER BY name;`;
           db.query(sql, (err, subjects) => {
-            if(err){
+            if (err) {
               console.log(err);
-            }else{
+            } else {
               res.render("settings", { user: req.user[0], result: result, subjects: subjects });
             }
           });
         }
       });
-    }else{
+    } else {
       res.render("settings", { user: req.user[0] });
     }
   } else {
@@ -34,33 +55,6 @@ router.get("/settings", function (req, res) {
 
 });
 
-// middleware that is specific to this router
-// router.use(function timeLog (req, res, next) {
-//   console.log('Time: ', Date.now())
-//   next()
-// })
-// define the home page route
-router.get('/', function (req, res) {
-  res.render('home');
-})
-
-// define the signup page route
-router.get('/signup', function (req, res) {
-  if (req.isAuthenticated()) {
-    res.redirect("dashboard");
-  } else {
-    res.render('signup');
-  }
-})
-
-// define the login page route
-router.get('/login', function (req, res) {
-  if (req.isAuthenticated()) {
-    res.redirect("dashboard");
-  } else {
-    res.render("login");
-  }
-});
 router.get('/dashboard', function (req, res) {
   if (req.isAuthenticated()) {
     res.render("dashboard", { user: req.user[0] });
@@ -73,8 +67,13 @@ router.get('/dashboard', function (req, res) {
 router.get('/assignment', function (req, res) {
 
   if (req.isAuthenticated()) {
-
-    let sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
+    let sql;
+    if (req.user[0].view === "asStudent") {
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
+    } else {
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id;`;
+      //sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id ORDER BY a.end_dt;`;
+    }
     let query = db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
@@ -93,8 +92,13 @@ router.get("/assignment/view/:assignmentid", function (req, res) {
   if (req.isAuthenticated()) {
 
     let assignmentid = req.params.assignmentid;
+    let sql;
 
-    let sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ? AND (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
+    if(req.user[0].view === "asStudent"){
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ? AND (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
+    }else{
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ?;`; 
+    }
 
     let query = db.query(sql, assignmentid, (err, result) => {
       if (err) {
@@ -175,7 +179,7 @@ router.get('/auth/google', passport.authenticate('google', { scope: ["profile", 
 router.get('/auth/google/notebook', passport.authenticate('google', { failureRedirect: '/login' }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect('/dashboard');
+    res.redirect('/assignment');
   });
 
 router.get("/assignment/add", function (req, res) {
@@ -212,6 +216,7 @@ router.get("/assignment/view/:assignmentid/:userid", function (req, res) {
         if (err) {
           console.log(err);
         } else if (result.length) {
+         
           res.render("submission", { result: result, user: req.user[0] });
         } else {
           res.redirect("/assignment");
@@ -226,6 +231,73 @@ router.get("/assignment/view/:assignmentid/:userid", function (req, res) {
 
 });
 
-router.post("/assignment/submit", store.array('assignmentImages', 12), controller.uploads);
+// post routes for settings page
+
+router.post("/edit/profile", function (req, res) {
+  if (req.isAuthenticated()) {
+    let name = req.body.username;
+    let sql = `UPDATE nb_users SET name = ? WHERE id = ?`;
+    db.query(sql, [name, req.user[0].id], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.redirect("/signout");
+      }
+    });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.post("/edit/roles", function (req, res) {
+  if (req.isAuthenticated()) {
+    if (req.user[0].view === "asAdmin") {
+      let roles = req.body;
+      let sql = `UPDATE nb_users SET view = ? WHERE id = ?`;
+
+      for (var key in roles) {
+        let query = db.query(sql, [roles[key], key], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      }
+      res.redirect("/settings");
+    } else {
+      res.redirect("/assignment");
+    }
+
+  } else {
+    res.redirect("/login");
+  }
+
+});
+
+router.post("/edit/subjects", function (req, res) {
+  if (req.isAuthenticated()) {
+    if (req.user[0].view === "asAdmin") {
+      let subjectid = req.body.id;
+      let subjectname = req.body.name;
+      let subjectcolor = req.body.color;
+      let sql = `INSERT INTO nb_subjects (id, name, color) VALUES (?,?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), color=VALUES(color);`;
+
+      for (var i = 0; i < subjectname.length; i++) {
+        db.query(sql, [subjectid[i], subjectname[i], subjectcolor[i]], (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      }
+
+      res.redirect("/settings");
+    } else {
+      res.redirect("/assignment");
+    }
+
+  } else {
+    res.redirect("/login");
+  }
+
+});
 
 module.exports = router;
