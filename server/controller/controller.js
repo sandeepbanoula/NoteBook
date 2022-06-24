@@ -62,16 +62,16 @@ exports.assignment = (req, res) => {
 }
 
 // Individual assignment route
-exports.viewassignment = (req,res) => {
+exports.viewassignment = (req, res) => {
   if (req.isAuthenticated()) {
 
     let assignmentid = req.params.assignmentid;
     let sql;
 
-    if(req.user[0].view === "asStudent"){
+    if (req.user[0].view === "asStudent") {
       sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ? AND (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
-    }else{
-      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ?;`; 
+    } else {
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ?;`;
     }
 
     let query = db.query(sql, assignmentid, (err, result) => {
@@ -79,7 +79,7 @@ exports.viewassignment = (req,res) => {
         console.log(err);
       } else if (result.length) {
         if (req.user[0].view !== "asStudent") {
-          sql = `SELECT DISTINCT(sub.user_id),user.name, sub.submitted, sub.assignment_id FROM nb_submissions AS sub JOIN nb_users AS user WHERE sub.user_id = user.id AND assignment_id = ?;`;
+          sql = `SELECT DISTINCT user.id,user.name, sub.submitted, sub.assignment_id FROM nb_submissions AS sub RIGHT JOIN nb_users AS user ON sub.user_id = user.id AND assignment_id = ?;`;
           db.query(sql, assignmentid, (err, submissions) => {
             if (err) {
               console.log(err);
@@ -120,7 +120,7 @@ exports.addassignment = (req, res) => {
 }
 
 // view student submitted assignment route
-exports.viewsubmissions = (req,res) => {
+exports.viewsubmissions = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user[0].view !== "asStudent") {
 
@@ -133,7 +133,7 @@ exports.viewsubmissions = (req,res) => {
         if (err) {
           console.log(err);
         } else if (result.length) {
-         
+
           res.render("submission", { result: result, user: req.user[0] });
         } else {
           res.redirect("/assignment");
@@ -148,7 +148,7 @@ exports.viewsubmissions = (req,res) => {
 }
 
 // settings page route
-exports.settings = (req,res) => {
+exports.settings = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user[0].view === "asAdmin") {
       let sql = `SELECT * FROM nb_users WHERE id != ? ORDER BY name ;`;
@@ -182,38 +182,38 @@ exports.about = (req, res) => {
 // add assigments post route
 exports.addassignmentpost = (req, res) => {
 
-    if (req.isAuthenticated()) {
-      if (req.user[0].view !== "asStudent") {
-        const subject = req.body.subject;
-        const topic = req.body.topic;
-        const body = req.body.assignmentBody;
-        const start_dt = req.body.start_dt;
-        const end_dt = req.body.end_dt;
-        const newAssignment = {
-          subject: subject,
-          topic: topic,
-          body: body,
-          start_dt: start_dt,
-          end_dt: end_dt
-        };
-  
-        let sql = `INSERT INTO nb_assignments SET ?`;
-        let query = db.query(sql,
-          newAssignment, (err, rows) => {
-            if (err) {
-              console.log(err);
-            } else {
-              res.redirect("/assignment");
-            }
-  
-          })
-      } else {
-        res.redirect("/assignment")
-      }
+  if (req.isAuthenticated()) {
+    if (req.user[0].view !== "asStudent") {
+      const subject = req.body.subject;
+      const topic = req.body.topic;
+      const body = req.body.assignmentBody;
+      const start_dt = req.body.start_dt;
+      const end_dt = req.body.end_dt;
+      const newAssignment = {
+        subject: subject,
+        topic: topic,
+        body: body,
+        start_dt: start_dt,
+        end_dt: end_dt
+      };
+
+      let sql = `INSERT INTO nb_assignments SET ?`;
+      let query = db.query(sql,
+        newAssignment, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            res.redirect("/assignment");
+          }
+
+        })
     } else {
-      res.redirect("/login");
+      res.redirect("/assignment")
     }
-  
+  } else {
+    res.redirect("/login");
+  }
+
 }
 
 // edit profile post route
@@ -234,7 +234,7 @@ exports.editprofile = (req, res) => {
 }
 
 // edit roles post routes
-exports.editroles = (req, res) =>{
+exports.editroles = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user[0].view === "asAdmin") {
       let roles = req.body;
@@ -320,17 +320,17 @@ exports.uploads = (req, res, next) => {
       db.query(sql, finalImg, (err, rows) => {
         if (err) {
           console.log(err);
-        } 
+        }
       })
     } else {
       res.redirect("/login");
     }
 
   });
-    // res.redirect("/dashboard");
-    Promise.all(result)
-        .then( ()=>{ res.redirect("/assignment") })
-        .catch(err =>{
-            res.json(err);
-        })
+  // res.redirect("/dashboard");
+  Promise.all(result)
+    .then(() => { res.redirect("/assignment") })
+    .catch(err => {
+      res.json(err);
+    })
 }

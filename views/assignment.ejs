@@ -58,13 +58,24 @@
         </thead>
         <tbody>
           <% sub.forEach(function(element, index){ %>
-          <tr>
+          <% if(element.submitted){ %>
+          <tr class="table-success">
             <th scope="row"><%=index+1%></th>
             <td><%=element.name%></td>
             <td><%=element.submitted%></td>
-            <td><a href="/assignment/view/<%=element.assignment_id%>/<%=element.user_id%>">View</a></td>
+            <td><a href="/assignment/view/<%=element.assignment_id%>/<%=element.id%>">View</a></td>
           </tr>
+          <% } %>
+          <% if(!element.submitted){ %>
+          <tr class="table-danger">
+            <th scope="row"><%=index+1%></th>
+            <td><%=element.name%></td>
+            <td><%=element.submitted%></td>
+            <td><a>Not Submitted</a></td>
+          </tr>
+          <% } %>
           <% }); %>
+
         </tbody>
       </table>
       <% } %>
