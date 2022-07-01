@@ -6,6 +6,20 @@
 
 </div>
 
+# Requirements
+
+- Node.js (lts version recommended)
+
+```bash
+  https://nodejs.org/
+```
+
+- XAMPP (for MySQL)
+
+```bash
+  https://www.apachefriends.org/download.html
+```
+
 # Installation
 
 - Clone the project
@@ -32,11 +46,33 @@
   touch .env
 ```
 
-- Start the server
+- Create .env file
+
+```bash
+  touch .env
+```
+
+- Create database on MySql
+
+```bash
+  create database notebook_manager
+```
+
+- Start the server(after editing env)
 
 ```bash
   npm run start
 ```
+
+- Create database tables (this will create all tables automatically)
+
+```bash
+  Goto: http://localhost:3000/firstrun
+```
+
+- Make sure to change view - 'asAdmin' in `nb_users` table after first login.
+
+- Enjoy
 
 ### Edit .env file
 

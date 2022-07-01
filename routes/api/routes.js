@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../../database/db');
 const passport = require('passport');
 const controller = require('../../server/controller/controller');
+const firstrun = require('../../server/start/firstrun');
 const store = require('../../server/middleware/upload');
 
 const router = express.Router();
@@ -14,6 +15,9 @@ router.get('/auth/google/notebook', passport.authenticate('google', { failureRed
     // Successful authentication, redirect home.
     res.redirect('/assignment');
   });
+
+// first run Route
+router.get("/firstrun", firstrun.firstrun);
 
 // home page Route
 router.get("/", controller.home);
@@ -51,7 +55,7 @@ router.get("/about", controller.about);
 // POST ROUTES
 
 // submit assignments solution post route
-router.post("/assignment/submit", store.array('assignmentImages', 12),controller.uploads);
+router.post("/assignment/submit", store.array('assignmentImages', 12), controller.uploads);
 
 //route for adding assignment for teacher
 router.post("/assignment/add", controller.addassignmentpost);
