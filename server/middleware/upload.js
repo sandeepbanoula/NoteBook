@@ -8,15 +8,17 @@ const imageFilter = (req, file, cb) => {
   }
 };
 
-var storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "server/uploads");
-  },
-  filename: (req, file, cb) => {
+// var storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "server/uploads");
+//   },
+//   filename: (req, file, cb) => {
 
-    var ext = file.originalname.substr(file.originalname.lastIndexOf("."));
-    cb(null, file.fieldname+'-'+Date.now()+ext);
-  },
-});
+//     var ext = file.originalname.substr(file.originalname.lastIndexOf("."));
+//     cb(null, file.fieldname + '-' + Date.now() + ext);
+//   },
+// });
+// module.exports = store = multer({ storage: storage, fileFilter: imageFilter });
 
+var storage = multer.memoryStorage();
 module.exports = store = multer({ storage: storage, fileFilter: imageFilter });

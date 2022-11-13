@@ -292,6 +292,7 @@ exports.editsubjects = (req, res) => {
 exports.uploads = (req, res, next) => {
 
   const files = req.files;
+  console.log(files);
 
   if (!files) {
     const error = new Error('Please choose files');
@@ -301,9 +302,10 @@ exports.uploads = (req, res, next) => {
 
   // convert images into base64 encoding
   let imgArray = files.map((file) => {
-    let img = fs.readFileSync(file.path)
+    // let img = fs.readFileSync(file.path)
 
-    return encode_image = img.toString('base64')
+    // return encode_image = img.toString('base64')
+    return encode_image = file.buffer.toString('base64')
   })
 
   let result = imgArray.map((src, index) => {
