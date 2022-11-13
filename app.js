@@ -8,7 +8,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
@@ -47,7 +47,7 @@ passport.use(new GoogleStrategy({
 },
 
   function (accessToken, refreshToken, profile, cb) {
-    
+
     let sql = `SELECT * FROM nb_users WHERE g_id = ?`;
     db.query(sql, profile.id, (err, result) => {
       if (err) {
