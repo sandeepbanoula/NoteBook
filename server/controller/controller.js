@@ -26,7 +26,11 @@ exports.login = (req, res) => {
 
 // Signout Route
 exports.signout = (req, res) => {
-  req.logout();
+  req.logout((err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
   res.redirect("/login");
 }
 
