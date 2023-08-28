@@ -54,13 +54,21 @@ router.get("/about", controller.about);
 
 // POST ROUTES
 
+// demo login for admins and teachers
+router.post('/demologin', passport.authenticate('local', { failureRedirect: '/login' }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    console.log(req);
+    res.redirect('/assignment');
+  });
+
 // submit assignments solution post route
 router.post("/assignment/submit", store.array('assignmentImages', 12), controller.uploads);
 
 //route for adding assignment for teacher
 router.post("/assignment/add", controller.addassignmentpost);
 
-// post routes for settings page
+// ---post routes for settings page---
 
 // post route for edit profiles
 router.post("/edit/profile", controller.editprofile);

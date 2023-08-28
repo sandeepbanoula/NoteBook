@@ -6,6 +6,7 @@ const session = require("express-session");
 var _ = require("lodash");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const LocalStrategy = require("passport-local").Strategy;
 
 const app = express();
 const port = process.env.PORT;
@@ -39,6 +40,26 @@ passport.deserializeUser((req, user, cb) => {
     cb(null, user);
   });
 });
+
+passport.use(new LocalStrategy(
+  function (username, password, cb) {
+    let sql = `SELECT * FROM nb_users WHERE g_id = ?`;
+    db.query(sql, username, (err, result) => {
+      if (err) {
+        return cb(err);
+      } else if (result.length) {
+        if (result[0].password != password) {
+          console.log("Wrong Password!!!");
+          return cb(null, false);
+        }
+        return cb(null, result);
+      } else {
+        console.log("User Not Found!! Use Demo logins or signup as student via Google!");
+        return cb(null, false);
+      }
+    });
+  }
+));
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,

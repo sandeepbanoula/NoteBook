@@ -56,6 +56,7 @@ exports.firstrun = (req, res) => {
                     name varchar(250) NOT NULL,
                         g_id varchar(255) NOT NULL,
                             view varchar(100) NOT NULL,
+                            password varchar(50),
                                 pic varchar(2083) NOT NULL,
                                     registered datetime NOT NULL DEFAULT current_timestamp(),
                                         PRIMARY KEY(id)
