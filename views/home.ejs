@@ -1,52 +1,46 @@
 <%- include('partials/header'); -%>
 
 <!-- Main-Section -->
-<div class="container-xl">
+<div class="container-sm">
   <!-- Navbar-Section -->
-  <nav class="navbar navbar-expand navbar-light mt-5">
+  <nav class="navbar navbar-expand navbar-light pt-5">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/#">
+      <a class="navbar-brand d-flex align-items-center" href="/#">
         <img src="/images/logo.svg" alt="Notebook-logo" class="logo" />
         <strong>NOTEBOOK</strong>
       </a>
-      <div class="ml-auto">
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/login">Login</a>
           </li>
-          <li class="nav-item get-started">
+          <li class="get-started d-none d-sm-block ms-3">
             <a class="nav-link active px-3" aria-current="page" href="/signup">Get Started</a>
           </li>
         </ul>
-      </div>
     </div>
   </nav>
   <!-- Main Heading & Subheading -->
-  <div class="container-fluid">
-    <div class="first-section">
+  <div class="container-fluid py-4">
       <div class="row">
-        <div class="col-sm">
-          <div class="main-heading">
-            The Easiest<br />
-            Way To Manage <br />
-            Your <span class="main-color">Notebook</span> <br />
-          </div>
-          <div class="sub-heading mt-4">
+        <div class="col-12 col-md-6 py-2 py-sm-5 pe-lg-5">
+          
+            <h1 class="main-heading">The Easiest
+            Way To Manage 
+            Your <span class="main-color">Notebook</span></h1>
+          
+          <div class="sub-heading pt-4">
             Keep track and mange your students notebook online, in the best
             possible way online.
           </div>
-          <div class="mt-4">
-            <a class="main-button" href="/signup">Get Started</a>
+          <div class="pt-4">
+            <a class="main-button d-inline-block" href="/signup">Get Started</a>
           </div>
         </div>
         <!-- Side-image -->
-        <div class="col-sm d-none d-lg-block">
-          <div>
+        <div class="col-12 col-md-6 d-none d-md-flex align-items-center justify-content-end">          
             <img class="addnotes-vector" src="/images/addnotes-vector.svg" alt="add-notes-image" />
-          </div>
         </div>
       </div>
-    </div>
   </div>
   <%- include('partials/subfooter'); -%>
   <%- include('partials/footer'); -%>
