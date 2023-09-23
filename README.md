@@ -107,6 +107,8 @@ Contributions are always welcome!
 
 <table>
   <tr>
-    <td align="center"><a href="https://www.linkedin.com/in/sandeepbanoula/"><img src="https://avatars.githubusercontent.com/u/65235940?v=4" width="100px;" alt=""/><br /><sub><b>Sandeep Banoula</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/sandeepbanoula" target="_blank"><img src="https://avatars.githubusercontent.com/u/65235940?v=4" width="100px;" alt=""/><br /><sub><b>Sandeep Banoula</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/blehnk" target="_blank"><img src="https://avatars.githubusercontent.com/u/59351771?v=4" width="100px;" alt=""/><br /><sub><b>Asish Nath</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/himanshinegi23" target="_blank"><img src="https://avatars.githubusercontent.com/u/143116065?v=4" width="100px;" alt=""/><br /><sub><b>Himanshi Negi</b></sub></a><br /></td>
   </tr>
 </table>
