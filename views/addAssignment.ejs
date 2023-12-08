@@ -26,11 +26,11 @@
 
         <div class="form-group row mt-3">
           <div class="col-md-6">
-            <label class="form-label">Start Date</label>
+            <label class="form-label">Schedule</label>
             <input class="form-control" id="start_dt" type="text" name="start_dt" />
           </div>
           <div class="col-md-6">
-            <label class="form-label">End Date</label>
+            <label class="form-label">Due Date</label>
             <input class="form-control" id="end_dt" type="text" name="end_dt" />
           </div>
         </div>
@@ -66,7 +66,7 @@
     singleDatePicker: true,
     timePicker: true,
     timePicker24Hour: true,
-    startDate: moment().startOf("minute").add(5, "day"),
+    startDate: moment().startOf("minute").add(7, "days"),
     locale: {
       format: "YYYY-MM-DD HH:mm:ss"
     }

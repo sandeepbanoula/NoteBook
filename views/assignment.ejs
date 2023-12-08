@@ -4,14 +4,16 @@
   <%- include('partials/sidebarMenu'); -%>
   <div class="d-flex flex-column flex-grow-1 bg-light">
 
-    <div class="p-4">
-      <div class="row row-cols-1 row-cols-lg-2 justify-content-between mb-3">
+    <div class="p-2 p-sm-4">
+      <div class="row row-cols-1 row-cols-sm-2 justify-content-between mb-3">
         <div class="col h2" style="color:<%=result.color%>">Subject - <%=result.name%></div>
         <div class="col h3">Assignment #<%=result.id%></div>
       </div>
-      <div class="row row-cols-1 row-cols-lg-2 justify-content-between mb-3">
-        <div class="col h6">Start : <%= result.start_dt %></div>
-        <div class="col h6">End : <%= result.end_dt %></div>
+      <div class="row row-cols-1 row-cols-sm-2 justify-content-between mb-3">
+        <div class="col h6">Given Date: <%= (result.start_dt).toLocaleString('en-IN', { day: 'numeric', month: 'short',
+  hour: 'numeric', minute: '2-digit' }); %></div>
+        <div class="col h6">Due Date: <%= result.end_dt.toLocaleString('en-IN', { day: 'numeric', month: 'short',
+  hour: 'numeric', minute: '2-digit' }); %></div>
       </div>
       <div class="h4 mb-3"><%=result.topic%></div>
       <div class="my-4 py-4 px-2 border border-dark"><%-result.body%></div>

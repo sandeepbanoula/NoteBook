@@ -101,4 +101,4 @@ const routes = require("./routes/api/routes");
 
 app.use('/', routes);
 
-app.listen(port, () => console.log(`Server is up and running in port ${port}`));
+app.listen(port, () => console.log(`Server is up and running in port ${port}. Open in browser: http://localhost:3000/`));
