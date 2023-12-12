@@ -83,7 +83,7 @@ exports.viewassignment = (req, res) => {
         console.log(err);
       } else if (result.length) {
         if (req.user[0].view !== "asStudent") {
-          sql = `SELECT DISTINCT user.id,user.name, sub.submitted, sub.assignment_id, fd.status FROM nb_submissions AS sub LEFT JOIN nb_feedbacks AS fd ON sub.assignment_id = fd.assignment_id RIGHT JOIN nb_users AS user ON sub.user_id = user.id AND sub.assignment_id = ?;`;
+          sql = `SELECT DISTINCT user.id,user.name, sub.submitted, sub.assignment_id, fd.status, fd.marks_obtained FROM nb_submissions AS sub LEFT JOIN nb_feedbacks AS fd ON sub.assignment_id = fd.assignment_id RIGHT JOIN nb_users AS user ON sub.user_id = user.id AND sub.assignment_id = ?;`;
           db.query(sql, assignmentid, (err, submissions) => {
             if (err) {
               console.log(err);

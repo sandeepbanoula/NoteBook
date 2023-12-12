@@ -1,5 +1,4 @@
 const express = require('express');
-const db = require('../../database/db');
 const passport = require('passport');
 const controller = require('../../server/controller/controller');
 const firstrun = require('../../server/start/firstrun');
