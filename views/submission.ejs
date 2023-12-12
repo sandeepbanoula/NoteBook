@@ -4,12 +4,51 @@
     <%- include('partials/sidebarMenu'); -%>
     <div class="d-flex flex-column flex-grow-1 bg-light">
         <div class="p-4">
-            <% result.forEach(function(element, index){ %>
-                <div class="mb-2">
-                    <img src="data:<%= element.imageType %>;base64,<%= element.imageBase64 %>" alt="<%= element.imageName %>">
+            <div class="h4 mb-3"><%=result[0].topic%></div>
+            <div class="my-4 py-4 px-2 border border-dark"><%-result[0].body%></div>
+            <div id="photo_slider" class="carousel slide" data-bs-wrap="false" style="height: auto; width: 50%;">
+                <div class="carousel-inner">
+                    <% result.forEach(function(element, index){ %>
+                        <div class="carousel-item <% if(index==0){ %><%= 'active' %><% } %>">
+                            <img src="data:<%= element.imageType %>;base64,<%= element.imageBase64 %>" class="d-block" style="background-size: contain; width: 100%;" alt="<%= element.imageName %>">
+                        </div>
+                    <% }) %>
                 </div>
-                
-            <% }) %>
+                <button class="carousel-control-prev" type="button" data-bs-target="#photo_slider" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#photo_slider" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            <% if(user.view != "asStudent" ){ %>
+                <form action="/assignment/feedback/<%=result[0].assignment_id%>/<%=result[0].user_id%>" method="post">
+                    
+                    <div class="form-group mt-3">
+                        <textarea class="form-control" id="feedback" name="feedback" name="remarks" placeholder="Any feedback" maxlength="150" rows="3"></textarea>
+                    </div>
+                    <div class="form-group mt-3 row">
+                        <div class="col col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">Obtained Marks</span>
+                                <input id="max_marks" class="form-control focus-ring" type="number" name="obt_marks" step="0.1" min="0" max="<%= result[0].max_marks %>" style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)"/>
+                                <span class="input-group-text">Out of <%= result[0].max_marks %></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success mt-3" type="submit" name="submit" value="accept">
+                            Accept
+                        </button>
+                        <button class="btn btn-danger mt-3" type="submit" name="submit" value="reject">
+                            Reject
+                        </button>
+                    </div>
+                </form>
+            <% } %>
+
         </div>
     </div>
 

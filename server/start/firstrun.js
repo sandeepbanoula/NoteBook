@@ -7,6 +7,7 @@ exports.firstrun = (req, res) => {
                 subject int(11) NOT NULL,
                     topic varchar(250) NOT NULL,
                         body text NOT NULL,
+                            max_marks int(3),
                             start_dt datetime NOT NULL DEFAULT current_timestamp(),
                                 end_dt datetime NOT NULL,
                                     PRIMARY KEY(id)
@@ -43,6 +44,22 @@ exports.firstrun = (req, res) => {
                                             comments varchar(30) NOT NULL,
                                                 PRIMARY KEY(id)
           ) ENGINE = InnoDB AUTO_INCREMENT = 10 DEFAULT CHARSET = utf8mb4`;
+
+        db.query(sql, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+        });
+
+        sql = `CREATE TABLE nb_feedbacks (
+                id int(11) NOT NULL AUTO_INCREMENT,
+                user_id int(11) NOT NULL,
+                assignment_id int(11) NOT NULL,
+                marks_obtained int(3) NOT NULL,
+                feedback varchar(150) NOT NULL,
+                status tinyint(1) NOT NULL,
+                PRIMARY KEY (id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`;
 
         db.query(sql, (err, result) => {
             if (err) {

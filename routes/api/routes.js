@@ -65,8 +65,11 @@ router.post('/demologin', passport.authenticate('local', { failureRedirect: '/lo
 // submit assignments solution post route
 router.post("/assignment/submit", store.array('assignmentImages', 12), controller.uploads);
 
-//route for adding assignment for teacher
+// route for adding assignment for teacher
 router.post("/assignment/add", controller.addassignmentpost);
+
+// submit feedback on student's assignment for admin & teachers
+router.post("/assignment/feedback/:assignmentid/:userid", controller.submitfeedback);
 
 // ---post routes for settings page---
 
