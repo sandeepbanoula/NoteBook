@@ -10,11 +10,12 @@
         <div class="col h3">Assignment #<%=result.id%></div>
       </div>
       <div class="row row-cols-1 row-cols-sm-2 justify-content-between mb-3">
-        <div class="col h6">Given Date: <%= (result.start_dt).toLocaleString('en-IN', { day: 'numeric', month: 'short',
+        <div class="col h6"><strong>Given Date:</strong> <%= (result.start_dt).toLocaleString('en-IN', { day: 'numeric', month: 'short',
   hour: 'numeric', minute: '2-digit' }); %></div>
-        <div class="col h6">Due Date: <%= result.end_dt.toLocaleString('en-IN', { day: 'numeric', month: 'short',
+        <div class="col h6"><strong>Due Date:</strong> <%= result.end_dt.toLocaleString('en-IN', { day: 'numeric', month: 'short',
   hour: 'numeric', minute: '2-digit' }); %></div>
       </div>
+      <div class="mb-3"><strong>Max marks:</strong> <%=result.max_marks%></div>
       <div class="h4 mb-3"><%=result.topic%></div>
       <div class="my-4 py-4 px-2 border border-dark"><%-result.body%></div>
 
@@ -55,27 +56,20 @@
             <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Date</th>
+            <th scope="col">Status</th>
             <th scope="col">View</th>
           </tr>
         </thead>
         <tbody>
           <% sub.forEach(function(element, index){ %>
-          <% if(element.submitted){ %>
-          <tr class="table-success">
+          <tr class="<%= element.status && element.submitted ? `table-success`:`table-danger` %>">
             <th scope="row"><%=index+1%></th>
             <td><%=element.name%></td>
-            <td><%=element.submitted%></td>
-            <td><a href="/assignment/view/<%=element.assignment_id%>/<%=element.id%>">View</a></td>
+            <td><%= element.submitted ? element.submitted.toLocaleString('en-IN', { day: 'numeric', month: 'short',
+  hour: 'numeric', minute: '2-digit' }) : `NA` %></td>
+            <td><%= element.status ? `Accepted` : element.status === null ? `NA` : `Rejected` %></td>
+            <td><%- element.submitted ? `<a href="/assignment/view/`+element.assignment_id+`/`+element.id+`">View</a>` : `NA` %></td>
           </tr>
-          <% } %>
-          <% if(!element.submitted){ %>
-          <tr class="table-danger">
-            <th scope="row"><%=index+1%></th>
-            <td><%=element.name%></td>
-            <td><%=element.submitted%></td>
-            <td><a>Not Submitted</a></td>
-          </tr>
-          <% } %>
           <% }); %>
 
         </tbody>

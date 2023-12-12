@@ -83,7 +83,7 @@ exports.viewassignment = (req, res) => {
         console.log(err);
       } else if (result.length) {
         if (req.user[0].view !== "asStudent") {
-          sql = `SELECT DISTINCT user.id,user.name, sub.submitted, sub.assignment_id FROM nb_submissions AS sub RIGHT JOIN nb_users AS user ON sub.user_id = user.id AND assignment_id = ?;`;
+          sql = `SELECT DISTINCT user.id,user.name, sub.submitted, sub.assignment_id, fd.status FROM nb_submissions AS sub LEFT JOIN nb_feedbacks AS fd ON sub.assignment_id = fd.assignment_id RIGHT JOIN nb_users AS user ON sub.user_id = user.id AND sub.assignment_id = ?;`;
           db.query(sql, assignmentid, (err, submissions) => {
             if (err) {
               console.log(err);
@@ -131,18 +131,17 @@ exports.viewsubmissions = (req, res) => {
       let assignmentid = req.params.assignmentid;
       let userid = req.params.userid;
 
-      let sql = `SELECT * FROM nb_submissions where assignment_id = ? AND user_id = ?;`;
+      let sql = `SELECT s.*, a.topic, a.body, a.max_marks FROM nb_submissions AS s join nb_assignments AS a ON s.assignment_id = a.id where s.assignment_id = ? AND s.user_id = ?;`;
 
       db.query(sql, [assignmentid, userid], (err, result) => {
         if (err) {
           console.log(err);
         } else if (result.length) {
-
           res.render("submission", { result: result, user: req.user[0] });
         } else {
           res.redirect("/assignment");
         }
-      })
+      });
     } else {
       res.redirect("/assignment");
     }
@@ -191,12 +190,14 @@ exports.addassignmentpost = (req, res) => {
       const subject = req.body.subject;
       const topic = req.body.topic;
       const body = req.body.assignmentBody;
+      const max_marks = req.body.max_marks;
       const start_dt = req.body.start_dt;
       const end_dt = req.body.end_dt;
       const newAssignment = {
         subject: subject,
         topic: topic,
         body: body,
+        max_marks: max_marks,
         start_dt: start_dt,
         end_dt: end_dt
       };
@@ -218,6 +219,42 @@ exports.addassignmentpost = (req, res) => {
     res.redirect("/login");
   }
 
+}
+
+// submit feedback post router
+exports.submitfeedback = (req, res) => {
+  if (req.isAuthenticated()) {
+    if (req.user[0].view !== "asStudent") {
+      const user_id = req.params.userid;
+      const assignment_id = req.params.assignmentid;
+      const marks_obtained = req.body.obt_marks;
+      const feedback = req.body.feedback;
+      const status = req.body.submit === 'accept' ? true : false;
+
+      const newFeedback = {
+        user_id: user_id,
+        assignment_id: assignment_id,
+        marks_obtained: marks_obtained,
+        feedback: feedback,
+        status: status
+      };
+
+      let sql = `INSERT INTO nb_feedbacks SET ?`;
+      let query = db.query(sql,
+        newFeedback, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            res.redirect("/assignment/view/" + assignment_id);
+          }
+
+        });
+    } else {
+      res.redirect("/assignment");
+    }
+  } else {
+    res.redirect("/login");
+  }
 }
 
 // edit profile post route
