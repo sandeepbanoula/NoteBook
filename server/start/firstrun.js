@@ -5,6 +5,7 @@ exports.firstrun = (req, res) => {
         sql = `CREATE TABLE nb_assignments (
             id int(11) NOT NULL AUTO_INCREMENT,
                 subject int(11) NOT NULL,
+                assignor int(11) NOT NULL,
                     topic varchar(250) NOT NULL,
                         body text NOT NULL,
                             max_marks int(3),
@@ -42,7 +43,9 @@ exports.firstrun = (req, res) => {
                                     imageBase64 longblob NOT NULL,
                                         submitted datetime NOT NULL DEFAULT current_timestamp(),
                                             comments varchar(30) NOT NULL,
-                                                PRIMARY KEY(id)
+                                                PRIMARY KEY(id),
+                                                 KEY assignment_id (assignment_id),
+  CONSTRAINT nb_submissions_ibfk_1 FOREIGN KEY (assignment_id) REFERENCES nb_assignments (id) ON DELETE CASCADE ON UPDATE NO ACTION
           ) ENGINE = InnoDB AUTO_INCREMENT = 10 DEFAULT CHARSET = utf8mb4`;
 
         db.query(sql, (err, result) => {
@@ -52,14 +55,16 @@ exports.firstrun = (req, res) => {
         });
 
         sql = `CREATE TABLE nb_feedbacks (
-                id int(11) NOT NULL AUTO_INCREMENT,
-                user_id int(11) NOT NULL,
-                assignment_id int(11) NOT NULL,
-                marks_obtained int(3) NOT NULL,
-                feedback varchar(150) NOT NULL,
-                status tinyint(1) NOT NULL,
-                PRIMARY KEY (id)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`;
+  id int(11) NOT NULL AUTO_INCREMENT,
+  user_id int(11) NOT NULL,
+  assignment_id int(11) NOT NULL,
+  marks_obtained int(3) NOT NULL,
+  feedback varchar(150) NOT NULL,
+  status tinyint(1) NOT NULL,
+  PRIMARY KEY (id),
+  KEY assignment_id (assignment_id),
+  CONSTRAINT nb_feedbacks_ibfk_1 FOREIGN KEY (assignment_id) REFERENCES nb_assignments (id) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`;
 
         db.query(sql, (err, result) => {
             if (err) {

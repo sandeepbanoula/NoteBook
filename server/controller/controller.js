@@ -57,7 +57,7 @@ exports.assignment = (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        res.render("assignmentBoard", { result: result, user: req.user[0] });
+        res.render("assignmentBoard", { result: result, user: req.user[0], message: req.query });
       }
     });
   } else {
@@ -103,6 +103,41 @@ exports.viewassignment = (req, res) => {
   }
 }
 
+// delete assignment route
+exports.deleteassignment = (req, res) => {
+  if (req.isAuthenticated()) {
+    let assignmentid = req.params.assignmentid;
+    let sql;
+    sql = `SELECT assignor from nb_assignments where id=?`;
+    db.query(sql, assignmentid, (err, result) => {
+      if (err) {
+        let msg = "Internal server error!"
+        res.status(500).json({ msg: msg });;
+      } else if (result.length > 0) {
+        if (req.user[0].view == "asAdmin" || req.user[0].id == result[0].assignor) {
+          sql = `Delete from nb_assignments where id=?`;
+          db.query(sql, assignmentid, (err, result1) => {
+            if (err) {
+              let msg = "Internal server error!"
+              res.status(500).json({ msg: msg });
+            } else {
+              res.status(202).json({ msg: "Assignment successfully deleted." });
+            }
+          });
+        } else {
+          let msg = "Permission denied."
+          res.status(401).json({ msg: msg });
+        }
+      } else {
+        let msg = "There is some problem.";
+        res.status(500).json({ msg: msg });
+      }
+    });
+  } else {
+    res.redirect("/login");
+  }
+}
+
 // add assignment route
 exports.addassignment = (req, res) => {
   if (req.isAuthenticated()) {
@@ -110,7 +145,7 @@ exports.addassignment = (req, res) => {
       let sql = `SELECT * FROM nb_subjects`;
       db.query(sql, (err, result) => {
         if (err) {
-          throw (err);
+          console.log(err);
         } else {
           res.render("addAssignment", { user: req.user[0], subjects: result });
         }
@@ -188,6 +223,7 @@ exports.addassignmentpost = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user[0].view !== "asStudent") {
       const subject = req.body.subject;
+      const assignor = req.user[0].id;
       const topic = req.body.topic;
       const body = req.body.assignmentBody;
       const max_marks = req.body.max_marks;
@@ -195,6 +231,7 @@ exports.addassignmentpost = (req, res) => {
       const end_dt = req.body.end_dt;
       const newAssignment = {
         subject: subject,
+        assignor: assignor,
         topic: topic,
         body: body,
         max_marks: max_marks,
@@ -207,8 +244,9 @@ exports.addassignmentpost = (req, res) => {
         newAssignment, (err, rows) => {
           if (err) {
             console.log(err);
+            res.redirect("/assignment?err=" + "There is some error while adding assignment!");
           } else {
-            res.redirect("/assignment");
+            res.redirect("/assignment?succ=" + "Assignment added successfully.");
           }
 
         })

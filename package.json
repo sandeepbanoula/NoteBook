@@ -4,7 +4,7 @@
   "description": "NoteBook is a online assignment manager",
   "main": "app.js",
   "scripts": {
-    "test": "nodemon app.js",
+    "dev": "nodemon app.js",
     "start": "node app.js"
   },
   "author": "Sandeep and SJavaScript",
@@ -19,7 +19,8 @@
     "mysql": "^2.18.1",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "tinymce": "^7.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

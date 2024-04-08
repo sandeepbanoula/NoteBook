@@ -3,23 +3,23 @@
 <!-- Main-Section -->
 <div class="container-sm">
   <!-- Navbar-Section -->
-    <nav class="navbar navbar-expand navbar-light pt-5">
+  <nav class="navbar navbar-expand navbar-light pt-5">
     <div class="container-fluid">
       <a class="navbar-brand d-flex align-items-center" href="/#">
         <img src="/images/logo.svg" alt="Notebook-logo" class="logo" />
         <strong>NOTEBOOK</strong>
       </a>
-        <ul class="navbar-nav">
-          <li class="get-started d-none d-sm-block ms-3">
-            <a class="nav-link active px-3" aria-current="page" href="/signup">Get Started</a>
-          </li>
-        </ul>
+      <ul class="navbar-nav">
+        <li class="get-started d-none d-sm-block ms-3">
+          <a class="nav-link active px-3" aria-current="page" href="/signup">Get Started</a>
+        </li>
+      </ul>
     </div>
   </nav>
 
   <div class="container-fluid py-4">
     <div class="row">
-      <div class="col-12 col-md-6 py-5 py-sm-5 d-flex flex-column align-items-center">
+      <!-- <div class="col-12 col-md-6 py-5 py-sm-5 d-flex flex-column align-items-center">
         <h2>Demo Login</h2>
         <form action="/demologin" method="post" class="px-0 px-lg-5 mx-0 mx-lg-5 row g-3 m-0 justify-content-center">
           <input
@@ -40,27 +40,17 @@
             value="Login"
           />
         </form>
-      </div>
-      <div class="col-12 col-md-6 py-5 py-sm-5 d-flex flex-column align-items-center">
+      </div> -->
+      <div class="col-12 py-5 py-sm-5 d-flex flex-column align-items-center">
         <h2>Student Login</h2>
         <div class="pt-3">
-          <a
-            class="btn btn-outline-dark py-2 px-3 px-sm-5"
-            href="/auth/google"
-            role="button"
-          >
-            <img
-              width="20px"
-              class="mb-1 mx-1"
-              alt="Google sign-in"
-              src="images/google-icon.svg"
-            />
+          <a class="btn btn-outline-dark py-2 px-3 px-sm-5" href="/auth/google" role="button">
+            <img width="20px" class="mb-1 mx-1" alt="Google sign-in" src="images/google-icon.svg" />
             <span>Login with Google</span>
           </a>
         </div>
       </div>
     </div>
   </div>
-  <%- include('partials/subfooter'); -%>
-  <%- include('partials/footer'); -%>
+  <%- include('partials/subfooter'); -%> <%- include('partials/footer'); -%>
 </div>

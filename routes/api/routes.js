@@ -39,6 +39,9 @@ router.get('/assignment', controller.assignment);
 // individual assignment route
 router.get("/assignment/view/:assignmentid", controller.viewassignment);
 
+// delete assignment route
+router.get("/assignment/delete/:assignmentid", controller.deleteassignment);
+
 // add assignment route
 router.get("/assignment/add", controller.addassignment);
 
