@@ -4,7 +4,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
     const toggle = document.getElementById(toggleId),
       nav = document.getElementById(navId),
       bodypd = document.getElementById(bodyId),
-      headerpd = document.getElementById(headerId)
+      headerpd = document.getElementById(headerId),
+      window_width = window.innerWidth;
+
+    if(window_width<768){
+        // show navbar
+        nav.classList.toggle('shown')
+        // change icon
+        toggle.classList.toggle('bx-menu-alt-left')
+        // add padding to body
+        bodypd.classList.toggle('body-pd')
+        // add padding to header
+        headerpd.classList.toggle('body-pd-header')
+    }
 
     // Validate that all variables exist
     if (toggle && nav && bodypd && headerpd) {
