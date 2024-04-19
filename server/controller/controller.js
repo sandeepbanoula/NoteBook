@@ -37,9 +37,17 @@ exports.signout = (req, res) => {
 // Dashboard Route
 exports.dashboard = (req, res) => {
   if (req.isAuthenticated()) {
-    res.render("dashboard", { user: req.user[0] });
+    let sql;
+    sql = `SELECT * FROM nb_subjects;`;
+    let query = db.query(sql, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("dashboard", { result: result, user: req.user[0], message: req.query });
+      }
+    });
   } else {
-    res.redirect("login");
+    res.redirect("/login");
   }
 }
 
@@ -54,6 +62,29 @@ exports.assignment = (req, res) => {
       //sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id ORDER BY a.end_dt;`;
     }
     let query = db.query(sql, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("assignmentBoard", { result: result, user: req.user[0], message: req.query });
+      }
+    });
+  } else {
+    res.redirect("/login");
+  }
+}
+
+// Subject wise assignment board Route
+exports.subjectassignment = (req, res) => {
+  if (req.isAuthenticated()) {
+    let sql;
+    let subid = req.params.subjectid;
+    if (req.user[0].view === "asStudent") {
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP AND s.id=?;`;
+    } else {
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id AND s.id=?;`;
+      //sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id ORDER BY a.end_dt;`;
+    }
+    let query = db.query(sql, subid, (err, result) => {
       if (err) {
         console.log(err);
       } else {

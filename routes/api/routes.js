@@ -36,6 +36,9 @@ router.get('/dashboard', controller.dashboard);
 // assignment board route
 router.get('/assignment', controller.assignment);
 
+//  board route
+router.get('/assignment/:subjectid', controller.subjectassignment);
+
 // individual assignment route
 router.get("/assignment/view/:assignmentid", controller.viewassignment);
 
