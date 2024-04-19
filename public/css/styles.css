@@ -2,6 +2,23 @@
   font-family: "poppins", sans-serif;
 }
 
+:root {
+  --header-height: 3rem;
+  --nav-width: 68px;
+  --first-color: #4723D9;
+  --first-color-light: #AFA5D9;
+  --white-color: #F7F6FB;
+  --body-font: 'poppins', sans-serif;
+  --normal-font-size: 1rem;
+  --z-fixed: 100
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box
+}
+
 /* html {
   height: -webkit-fill-available;
 } */
@@ -133,22 +150,6 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
 
-:root {
-  --header-height: 3rem;
-  --nav-width: 68px;
-  --first-color: #4723D9;
-  --first-color-light: #AFA5D9;
-  --white-color: #F7F6FB;
-  --body-font: 'poppins', sans-serif;
-  --normal-font-size: 1rem;
-  --z-fixed: 100
-}
-
-*,
-::before,
-::after {
-  box-sizing: border-box
-}
 
 /* Sidebar Menu Styles */
 
@@ -174,7 +175,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
+  padding: 0 1.3rem;
   background-color: var(--white-color);
   z-index: var(--z-fixed);
   transition: .5s
@@ -203,7 +204,7 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: hidden
+  overflow: hidden;
 }
 
 .nav_logo,
@@ -245,15 +246,16 @@ a {
 }
 
 .shown {
-  left: 0
+  left: 0;
+  width: var(--nav-width)+156px;
 }
 
-.body-pd {
+/* .body-pd {
   padding-left: calc(var(--nav-width) + 1rem)
-}
+} */
 
 .body-pd-header {
-  padding-left: calc(var(--nav-width) + 1rem)
+  padding-left: calc(var(--nav-width) + 154px)
 }
 
 .nav_list .active {
@@ -281,7 +283,7 @@ a {
 
   .header {
     height: calc(var(--header-height) + 1rem);
-    padding: 0 2rem 0 calc(var(--nav-width) + 2rem)
+    padding: 0 2rem 0 calc(var(--nav-width) + 1.3rem)
   }
 
   .l-navbar {
