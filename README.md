@@ -65,6 +65,7 @@
 ```
 
 - Create database tables (this will create all tables automatically)
+- *Note: This feature is deprecated and will be removed from README.md in future. The database tables will be automatically created using Sequelize on very first run.
 
 ```bash
   Goto: http://localhost:3000/firstrun

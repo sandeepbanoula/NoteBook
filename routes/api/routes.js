@@ -1,7 +1,6 @@
 const express = require('express');
 const passport = require('passport');
 const controller = require('../../server/controller/controller');
-const firstrun = require('../../server/start/firstrun');
 const store = require('../../server/middleware/upload');
 
 const router = express.Router();
@@ -14,9 +13,6 @@ router.get('/auth/google/notebook', passport.authenticate('google', { failureRed
     // Successful authentication, redirect home.
     res.redirect('/assignment');
   });
-
-// first run Route
-router.get("/firstrun", firstrun.firstrun);
 
 // home page Route
 router.get("/", controller.home);
@@ -33,6 +29,9 @@ router.get('/signout', controller.signout);
 // dashboard page route
 router.get('/dashboard', controller.dashboard);
 
+// add assignment route
+router.get("/assignment/add", controller.addassignment);
+
 // assignment board route
 router.get('/assignment', controller.assignment);
 
@@ -44,9 +43,6 @@ router.get("/assignment/view/:assignmentid", controller.viewassignment);
 
 // delete assignment route
 router.get("/assignment/delete/:assignmentid", controller.deleteassignment);
-
-// add assignment route
-router.get("/assignment/add", controller.addassignment);
 
 // view student submit assignment assignment route
 router.get("/assignment/view/:assignmentid/:userid", controller.viewsubmissions);

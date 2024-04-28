@@ -1,9 +1,10 @@
 require("dotenv").config()
 const express = require("express");
-const db = require('./database/db');
+const db = require("./database/db");
+const sequelize = require("./database/sequelize");
 const ejs = require("ejs");
 const session = require("express-session");
-var _ = require("lodash");
+// var _ = require("lodash");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const LocalStrategy = require("passport-local").Strategy;
@@ -26,7 +27,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function (user, cb) {
+passport.serializeUser((user, cb) => {
   cb(null, user);
 });
 
@@ -96,6 +97,10 @@ passport.use(new GoogleStrategy({
     });
   }
 ));
+
+const sqlroute = require("./server/model/model.js");
+
+app.use('/sql', sqlroute);
 
 const routes = require("./routes/api/routes");
 

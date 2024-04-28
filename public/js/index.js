@@ -49,20 +49,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
   // Your code to run since DOM is loaded and ready
 });
 
-tinymce.init({
-  selector: '#assignment-body',
-  plugins: 'advlist link image lists',
-  /* without images_upload_url set, Upload tab won't show up*/
-  images_upload_url: '/uploadAssignment',
+// tinymce.init({
+//   selector: '#assignment-body',
+//   plugins: 'advlist link image lists',
+//   /* without images_upload_url set, Upload tab won't show up*/
+//   images_upload_url: '/uploadAssignment',
 
-  /* we override default upload handler to simulate successful upload*/
-  images_upload_handler: function (blobInfo, success, failure) {
-    setTimeout(function () {
-      /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-      success('http://moxiecode.cachefly.net/tinymce/v9/images/logo.png');
-    }, 2000);
-  },
-});
+//   /* we override default upload handler to simulate successful upload*/
+//   images_upload_handler: function (blobInfo, success, failure) {
+//     setTimeout(function () {
+//       /* no matter what you upload, we will turn it into TinyMCE logo :)*/
+//       success('http://moxiecode.cachefly.net/tinymce/v9/images/logo.png');
+//     }, 2000);
+//   },
+// });
 
 // $('.nav_list').on("click",".nav_link",function(e){ 
 //   e.preventDefault(); // cancel click
