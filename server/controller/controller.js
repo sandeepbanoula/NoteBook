@@ -38,7 +38,7 @@ exports.signout = (req, res) => {
 exports.dashboard = (req, res) => {
   if (req.isAuthenticated()) {
     let sql;
-    sql = `SELECT * FROM nb_subjects;`;
+    sql = `SELECT * FROM nb_notebooks;`;
     let query = db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
@@ -56,10 +56,10 @@ exports.assignment = (req, res) => {
   if (req.isAuthenticated()) {
     let sql;
     if (req.user[0].view === "asStudent") {
-      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_notebooks AS s ON a.subject = s.id WHERE (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
     } else {
-      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id;`;
-      //sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id ORDER BY a.end_dt;`;
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_notebooks AS s ON a.subject = s.id;`;
+      //sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_notebooks AS s ON a.subject = s.id ORDER BY a.end_dt;`;
     }
     let query = db.query(sql, (err, result) => {
       if (err) {
@@ -79,10 +79,10 @@ exports.subjectassignment = (req, res) => {
     let sql;
     let subid = req.params.subjectid;
     if (req.user[0].view === "asStudent") {
-      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP AND s.id=?;`;
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_notebooks AS s ON a.subject = s.id WHERE (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP AND s.id=?;`;
     } else {
-      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id AND s.id=?;`;
-      //sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id ORDER BY a.end_dt;`;
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_notebooks AS s ON a.subject = s.id AND s.id=?;`;
+      //sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_notebooks AS s ON a.subject = s.id ORDER BY a.end_dt;`;
     }
     let query = db.query(sql, subid, (err, result) => {
       if (err) {
@@ -104,9 +104,9 @@ exports.viewassignment = (req, res) => {
     let sql;
 
     if (req.user[0].view === "asStudent") {
-      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ? AND (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_notebooks AS s ON a.subject = s.id WHERE a.id = ? AND (a.end_dt>=CURRENT_TIMESTAMP OR a.end_dt="0000-00-00 00:00:00") AND a.start_dt<=CURRENT_TIMESTAMP;`;
     } else {
-      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_subjects AS s ON a.subject = s.id WHERE a.id = ?;`;
+      sql = `SELECT a.*, s.name, s.color FROM nb_assignments AS a JOIN nb_notebooks AS s ON a.subject = s.id WHERE a.id = ?;`;
     }
 
     let query = db.query(sql, assignmentid, (err, result) => {
@@ -173,7 +173,7 @@ exports.deleteassignment = (req, res) => {
 exports.addassignment = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user[0].view !== "asStudent") {
-      let sql = `SELECT * FROM nb_subjects`;
+      let sql = `SELECT * FROM nb_notebooks`;
       db.query(sql, (err, result) => {
         if (err) {
           console.log(err);
@@ -225,7 +225,7 @@ exports.settings = (req, res) => {
         if (err) {
           console.log(err);
         } else {
-          sql = `SELECT * FROM nb_subjects ORDER BY name;`;
+          sql = `SELECT * FROM nb_notebooks ORDER BY name;`;
           db.query(sql, (err, subjects) => {
             if (err) {
               console.log(err);
@@ -374,7 +374,7 @@ exports.editsubjects = (req, res) => {
       let subjectid = req.body.id;
       let subjectname = req.body.name;
       let subjectcolor = req.body.color;
-      let sql = `INSERT INTO nb_subjects (id, name, color) VALUES (?,?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), color=VALUES(color);`;
+      let sql = `INSERT INTO nb_notebooks (id, name, color) VALUES (?,?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name), color=VALUES(color);`;
 
       for (var i = 0; i < subjectname.length; i++) {
         db.query(sql, [subjectid[i], subjectname[i], subjectcolor[i]], (err, result) => {

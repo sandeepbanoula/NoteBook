@@ -65,7 +65,7 @@ const Subject = sequelize.define('Subject', {
     },
     },
     {
-        tableName: 'nb_subjects',
+        tableName: 'nb_notebooks',
         timestamps: false
     });
 
