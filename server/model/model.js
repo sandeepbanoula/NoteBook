@@ -8,11 +8,6 @@ const router = express.Router();
 const Assignment = sequelize.define(
     "Assignment",
     {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
         subject: {
             type: DataTypes.INTEGER,
             allowNull: false
@@ -49,12 +44,7 @@ const Assignment = sequelize.define(
 
 
 // Subject Table
-const Subject = sequelize.define('Subject', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const Notebook = sequelize.define('Notebook', {
     name: {
         type: DataTypes.STRING(30),
         allowNull: false
@@ -71,11 +61,6 @@ const Subject = sequelize.define('Subject', {
 
 // Submission Table
 const Submission = sequelize.define('Submission', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
     user_id: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -126,11 +111,6 @@ Submission.belongsTo(Assignment,{
 
 // Feedback Table
 const Feedback = sequelize.define('Feedback', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
     user_id: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -171,11 +151,6 @@ Feedback.belongsTo(Assignment, {
 
 //User Table
 const User = sequelize.define('User', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
     email: {
         type: DataTypes.STRING(100),
         allowNull: false
@@ -195,18 +170,43 @@ const User = sequelize.define('User', {
     pic: {
         type: DataTypes.STRING(2083),
         allowNull: false
-    },
-    registered: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: literal('CURRENT_TIMESTAMP')
     }
 },{
     tableName: "nb_users",
-    timestamps: false
+    timestamps: true,
+    updatedAt: false,
+    createdAt: "registered"
 });
 
-sequelize.sync({ force: false }).then(() => {
+//M-to-M relation table between nb_users and nb_notebooks
+const UserNotebook = sequelize.define("UserNotebook", {
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: User,
+            key: "id"
+        }
+    },
+    notebook_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Notebook,
+            key: "id"
+        }
+    },
+    role: {
+        type: DataTypes.STRING(9),
+        allowNull: false
+    },
+},{
+    tableName: "nb_user_notebook",
+    timestamps: true,
+    updatedAt: false
+});
+
+sequelize.sync({ alter: true }).then(() => {
     console.log('Table created successfully.');
 }).catch((error) => {
     console.log('Error creating table:', error);
