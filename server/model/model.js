@@ -53,10 +53,13 @@ const Notebook = sequelize.define('Notebook', {
         type: DataTypes.STRING(8),
         allowNull: false
     },
+    code: {
+        type: DataTypes.STRING(5),
+        allowNull: false
+    }
     },
     {
         tableName: 'nb_notebooks',
-        timestamps: false
     });
 
 // Submission Table
