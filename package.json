@@ -10,6 +10,7 @@
   "author": "Sandeep and SJavaScript",
   "license": "none",
   "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
     "dotenv": "^16.0.1",
     "ejs": "^3.1.5",
     "express": "^4.17.1",

@@ -56,6 +56,10 @@ const Notebook = sequelize.define('Notebook', {
     code: {
         type: DataTypes.STRING(5),
         allowNull: false
+    },
+    owner: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
     },
     {
@@ -215,4 +219,4 @@ sequelize.sync({ alter: true }).then(() => {
     console.log('Error creating table:', error);
 });
 
-module.exports = router;
+module.exports = { User, Notebook, Assignment, Submission, UserNotebook, Feedback};

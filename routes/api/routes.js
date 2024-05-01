@@ -55,6 +55,9 @@ router.get("/about", controller.about);
 
 // POST ROUTES
 
+// create notebook route
+router.post("/create/notebook", controller.createNotebook);
+
 // demo login for admins and teachers
 router.post('/demologin', passport.authenticate('local', { failureRedirect: '/login' }),
   function (req, res) {
