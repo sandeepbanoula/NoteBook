@@ -1,5 +1,6 @@
 const fs = require("fs");
-const db = require('../../database/db');
+const db = require("../../database/db");
+const { createNotebookTransaction } = require("../repository/transactions");
 
 // Home route
 exports.home = (req, res) => {
@@ -184,6 +185,26 @@ exports.addassignment = (req, res) => {
     } else {
       res.redirect("/assignment");
     }
+  } else {
+    res.redirect("/login");
+  }
+}
+
+// create notebook
+exports.createNotebook = (req, res) => {
+  if (req.isAuthenticated()) {
+    const nbName = req.body.nbName;
+    const nbColor = req.body.nbColor;
+    const nbOwner = req.user[0].id;
+    createNotebookTransaction(nbName, nbColor, nbOwner)
+      .then((item) => {
+        console.log(item);
+        res.redirect("/assignment?succ=" + nbName + " notebook created.");
+      })
+      .catch((err) => {
+        console.log(err);
+        res.redirect("/assignment?err=There is some error!");
+      });
   } else {
     res.redirect("/login");
   }
