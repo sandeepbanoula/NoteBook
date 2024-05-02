@@ -8,9 +8,21 @@ const createNotebook = async (nbName, nbColor, nbUserId, transaction) => {
         color: nbColor,
         code: nbCode(),
         owner: nbUserId
-    },{transaction: transaction})
+    }, { transaction: transaction })
 
     return nb;
 }
 
-module.exports = { createNotebook }
+const selectNotebookByCode = async (attr, nbCode, rw) => {
+    const nb = await Notebook.findAll({
+        attributes: attr,
+        where: {
+            code: nbCode
+        },
+        raw: rw
+    });
+
+    return nb;
+}
+
+module.exports = { createNotebook, selectNotebookByCode }

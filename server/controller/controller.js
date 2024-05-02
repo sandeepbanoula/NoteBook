@@ -1,6 +1,8 @@
 const fs = require("fs");
 const db = require("../../database/db");
 const { createNotebookTransaction } = require("../repository/transactions");
+const { createUserNotebook } = require("../repository/UserNotebookRepository");
+const { selectNotebookByCode } = require("../repository/NotebookRepository");
 
 // Home route
 exports.home = (req, res) => {
@@ -207,6 +209,35 @@ exports.createNotebook = (req, res) => {
       });
   } else {
     res.redirect("/login");
+  }
+}
+
+//join notebook
+exports.joinNotebook = (req, res) => {
+  if (req.isAuthenticated()) {
+    const nbCode = req.body.nbCode;
+    const nb = selectNotebookByCode(["id"], nbCode, true)
+      .then((item) => {
+        console.log(item);
+        if (item == undefined || item.length == 0) {
+          res.redirect("/assignment?err=Notebook not found!");
+        } else {
+          createUserNotebook(req.user[0].id, item[0].id, "student", null)
+            .then(() => {
+              res.redirect("/assignment?succ=Notebook joined.");
+            })
+            .catch((err) => {
+              console.log(err);
+              res.redirect("/assignment?err=There is some error!");
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.redirect("/assignment?err=There is some error!");
+      });
+    // console.log(nb);
+
   }
 }
 
