@@ -61,7 +61,7 @@ const Notebook = sequelize.define('Notebook', {
         type: DataTypes.INTEGER,
         allowNull: false
     }
-    },
+},
     {
         tableName: 'nb_notebooks',
     });
@@ -101,7 +101,7 @@ const Submission = sequelize.define('Submission', {
     timestamps: false
 });
 
-Assignment.hasMany(Submission,{
+Assignment.hasMany(Submission, {
     onDelete: "CASCADE",
     onUpdate: "NO ACTION",
     foreignKey: {
@@ -110,8 +110,8 @@ Assignment.hasMany(Submission,{
     }
 });
 
-Submission.belongsTo(Assignment,{
-    foreignKey:{
+Submission.belongsTo(Assignment, {
+    foreignKey: {
         name: "assignment_id"
     }
 });
@@ -178,7 +178,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(2083),
         allowNull: false
     }
-},{
+}, {
     tableName: "nb_users",
     timestamps: true,
     updatedAt: false,
@@ -207,16 +207,16 @@ const UserNotebook = sequelize.define("UserNotebook", {
         type: DataTypes.STRING(9),
         allowNull: false
     },
-},{
+}, {
     tableName: "nb_user_notebook",
     timestamps: true,
     updatedAt: false
 });
 
-sequelize.sync({ alter: true }).then(() => {
+sequelize.sync({ force: false }).then(() => {
     console.log('Table created successfully.');
 }).catch((error) => {
     console.log('Error creating table:', error);
 });
 
-module.exports = { User, Notebook, Assignment, Submission, UserNotebook, Feedback};
+module.exports = { User, Notebook, Assignment, Submission, UserNotebook, Feedback };

@@ -6,11 +6,11 @@
         <i class="bx bx-layer-plus bx-sm"></i>
       </button>
       <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">Join notebook</a></li>
+        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#joinNotebook">Join notebook</a></li>
         <li>
           <hr class="dropdown-divider" />
         </li>
-        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create notebook</a></li>
+        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#createNotebook">Create notebook</a></li>
       </ul>
     </div>
     <div class="dropdown text-end">
@@ -65,8 +65,8 @@
   </nav>
 </div>
 
-<!-- Popup modals -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- Create Notebook-->
+<div class="modal fade" id="createNotebook" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createNotebook" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -76,7 +76,7 @@
       <form action="/create/notebook" method="post">
         <div class="modal-body">
           <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="nbName" name="nbName" placeholder="Notebook Name" required autofocus/>
+            <input type="text" class="form-control" id="nbName" name="nbName" placeholder="Notebook Name" required autofocus />
             <label for="nbName">Notebook Name</label>
           </div>
           <div class="row">
@@ -95,6 +95,32 @@
   </div>
 </div>
 
+<!-- Join Notebook-->
+<div class="modal fade" id="joinNotebook" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="joinNotebook" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title fs-5">Join Notebook</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/join/notebook" method="post">
+        <div class="modal-body">
+          <p class="small">Ask your teacher for the notebook code, then enter it here.</p>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="nbCode" name="nbCode" placeholder="Notebook code" required autofocus />
+            <label for="nbCode">Notebook Code</label>
+            <div id="code-invalid" class="invalid-feedback"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" id="joinNbBtn" class="btn btn-primary">Join</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
   $(document).ready(function () {
     var url = window.location;
@@ -107,5 +133,33 @@
         return this.href == url;
       })
       .addClass("active");
+
+    //validate code
+    let codeErr = true;
+    $("#nbCode").keyup(function () {
+      validateNbCode();
+    });
+    function validateNbCode(e) {
+      let nbCode = $("#nbCode").val();
+      if (nbCode.length != 5) {
+        $("#code-invalid").show();
+        $("#nbCode").addClass("is-invalid");
+        $("#code-invalid").html("Use a code with 5 letters or numbers!");
+        codeErr = false;
+        return false;
+      } else {
+        $("#nbCode").removeClass("is-invalid");
+        $("#code-invalid").hide();
+        codeErr = true;
+      }
+    }
+    $("#joinNbBtn").click(() => {
+      validateNbCode();
+      if (codeErr) {
+        return true;
+      } else {
+        return false;
+      }
+    });
   });
 </script>
