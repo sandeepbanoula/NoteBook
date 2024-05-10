@@ -57,10 +57,6 @@ const Notebook = sequelize.define('Notebook', {
         type: DataTypes.STRING(5),
         allowNull: false
     },
-    owner: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    }
 },
     {
         tableName: 'nb_notebooks',
@@ -101,21 +97,6 @@ const Submission = sequelize.define('Submission', {
     timestamps: false
 });
 
-Assignment.hasMany(Submission, {
-    onDelete: "CASCADE",
-    onUpdate: "NO ACTION",
-    foreignKey: {
-        name: "assignment_id",
-        allowNull: false,
-    }
-});
-
-Submission.belongsTo(Assignment, {
-    foreignKey: {
-        name: "assignment_id"
-    }
-});
-
 // Feedback Table
 const Feedback = sequelize.define('Feedback', {
     user_id: {
@@ -139,21 +120,6 @@ const Feedback = sequelize.define('Feedback', {
 }, {
     tableName: 'nb_feedbacks',
     timestamps: false
-});
-
-Assignment.hasMany(Feedback, {
-    onDelete: "CASCADE",
-    onUpdate: "NO ACTION",
-    foreignKey: {
-        name: "assignment_id",
-        allowNull: false,
-    }
-});
-
-Feedback.belongsTo(Assignment, {
-    foreignKey: {
-        name: "assignment_id"
-    }
 });
 
 //User Table
@@ -211,6 +177,67 @@ const UserNotebook = sequelize.define("UserNotebook", {
     tableName: "nb_user_notebook",
     timestamps: true,
     updatedAt: false
+});
+
+//User-Notebook(owner) Association
+User.hasMany(Notebook, {
+    foreignKey: {
+        name: "owner",
+        allowNull: false
+    },
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION"
+});
+
+Notebook.belongsTo(User, {
+    foreignKey: "owner"
+});
+
+//Assignment Submission Assocaition
+Assignment.hasMany(Submission, {
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
+    foreignKey: {
+        name: "assignment_id",
+        allowNull: false,
+    }
+});
+
+Submission.belongsTo(Assignment, {
+    foreignKey: {
+        name: "assignment_id"
+    }
+});
+
+//Assignment-Feedback Association
+Assignment.hasMany(Feedback, {
+    onDelete: "CASCADE",
+    onUpdate: "NO ACTION",
+    foreignKey: {
+        name: "assignment_id",
+        allowNull: false,
+    }
+});
+
+Feedback.belongsTo(Assignment, {
+    foreignKey: {
+        name: "assignment_id"
+    }
+});
+
+//User-UserNotebook-Notebook Association
+Notebook.hasMany(UserNotebook, {
+    foreignKey: "notebook_id"
+});
+UserNotebook.belongsTo(Notebook, {
+    foreignKey: "notebook_id"
+});
+
+User.hasMany(UserNotebook, {
+    foreignKey: "user_id"
+});
+UserNotebook.belongsTo(User, {
+    foreignKey: "user_id"
 });
 
 sequelize.sync({ force: false }).then(() => {

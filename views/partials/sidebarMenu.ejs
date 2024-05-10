@@ -37,10 +37,10 @@
         <span class="nav_logo-name">NoteBook</span>
       </a>
       <div class="nav_list">
-        <!-- <a href="/dashboard" class="nav_link">
+        <a href="/dashboard" class="nav_link">
           <i class="bx bx-grid-alt nav_icon"></i>
           <span class="nav_name">Dashboard</span>
-        </a> -->
+        </a>
         <a href="/assignment" class="nav_link">
           <i class="bx bx-folder nav_icon"></i>
           <span class="nav_name">Assignments</span>
@@ -133,6 +133,15 @@
         return this.href == url;
       })
       .addClass("active");
+
+    //focus on input on modal open
+    $("#createNotebook").on("shown.bs.modal",()=>{
+      $("#nbName").focus();
+    });
+
+    $("#joinNotebook").on("shown.bs.modal",()=>{
+      $("#nbCode").focus();
+    });
 
     //validate code
     let codeErr = true;

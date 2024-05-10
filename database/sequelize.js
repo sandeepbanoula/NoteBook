@@ -7,6 +7,9 @@ const sequelize = new Sequelize({
     password: process.env.DB_PASS,
     database: process.env.DB_DATABASE,
     port: process.env.DB_PORT,
+    define: {
+        underscored: true
+    },
     pool: {
         max: 10,
         min: 0,

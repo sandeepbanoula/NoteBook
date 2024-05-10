@@ -78,22 +78,37 @@
       <% } %>
       <div id="assignmentCard" class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
         <% result.forEach(function(element){ %>
-        <div id="<%= element.id %>" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 cardSingle">
-          <div class="card card-cover h-100 overflow-hidden shadow-lg" style="background-color: <%=element.color%>">
-            <div class="card-header">
-                Subject Code #2024<%=element.id%>
-              <!-- <%=element.name%> <% if(user.view == "asAdmin" || user.id == element.assignor){ %>
-              <span class="position-absolute end-0 me-3 del-card">
-                <a class="del-link" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-assignmentid="<%=element.id%>"></a>
-              </span>
-              <% } %> -->
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 cardSingle">
+          <div class="card h-100 overflow-hidden shadow-lg">
+            <div class="row">
+              <div class="col-1" style="background-color: <%=element[ 'Notebook.color'] %>"></div>
+              <div class="col-2 d-flex justify-content-center align-items-center ps-4">
+                <img alt="<%=element['Notebook.User.name']%>" src="<%=element['Notebook.User.pic']%>" class="rounded-circle img-responsive border border-dark" width="75" height="75" />
+              </div>
+              <div class="col-md-8 col-7">
+                <div class="card-body d-flex flex-column justify-content-center pe-0">
+                  <h5 class="card-title fs-4 fw-bolder"><%=element['Notebook.name']%></h5>
+                  <p class="fw-normal mb-1"><%=element['Notebook.User.name']%></p>
+                  <p class="fw-light text-body-secondary mb-0">Role: <%= element.role=='owner'? 'Teacher':'Student'; %></p>
+                  <a href="/assignment/notebook-<%=element['Notebook.createdAt'].valueOf()%>-<%=element.notebook_id%>" class="stretched-link mt-auto submit-button"></a>
+                </div>
+              </div>
+              <div class="col-md-1 col-2 pt-3 ps-0 pe-3 fs-5">
+                <div class="dropdown">
+                  <a class="bx bx-dots-vertical-rounded z-2 position-absolute" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                  <ul class="dropdown-menu position-fixed">
+                    <% if(element.role=="owner" || element.role=="teacher"){ %>
+                    <li><a class="dropdown-item" href="#">Copy invite link</a></li>
+                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                    <li><a class="dropdown-item" href="#">Archive</a></li>
+                    <% } %>
+                    <% if(element.role=="student" || element.role=="teacher"){ %>
+                    <li><a class="dropdown-item" href="#">Leave</a></li>
+                    <% } %>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title"><%=element.name%></h5>
-              <p class="card-text">Teacher: <%=element.name%></p>
-              <a href="/assignment/<%=element.id%>" class="btn btn-primary stretched-link mt-auto submit-button">ENTER</a>
-            </div>
-    
           </div>
         </div>
         <% }); %>
@@ -142,6 +157,5 @@
     }
   }
 </script>
-
 
 <%- include('partials/footer'); -%>

@@ -1,8 +1,8 @@
 const fs = require("fs");
 const db = require("../../database/db");
 const { createNotebookTransaction } = require("../repository/transactions");
-const { createUserNotebook } = require("../repository/UserNotebookRepository");
-const { selectNotebookByCode } = require("../repository/NotebookRepository");
+const { createUserNotebook, selectUserNotebook, findCreateUserNotebook } = require("../repository/UserNotebookRepository");
+const { selectNotebookByCode, createOwnerNotebook } = require("../repository/NotebookRepository");
 
 // Home route
 exports.home = (req, res) => {
@@ -12,7 +12,7 @@ exports.home = (req, res) => {
 // Signup Route
 exports.signup = (req, res) => {
   if (req.isAuthenticated()) {
-    res.redirect("assignment");
+    res.redirect("dashboard");
   } else {
     res.render('signup');
   }
@@ -21,7 +21,7 @@ exports.signup = (req, res) => {
 // Login Route
 exports.login = (req, res) => {
   if (req.isAuthenticated()) {
-    res.redirect("assignment");
+    res.redirect("dashboard");
   } else {
     res.render("login");
   }
@@ -40,15 +40,14 @@ exports.signout = (req, res) => {
 // Dashboard Route
 exports.dashboard = (req, res) => {
   if (req.isAuthenticated()) {
-    let sql;
-    sql = `SELECT * FROM nb_notebooks;`;
-    let query = db.query(sql, (err, result) => {
-      if (err) {
+    selectUserNotebook(req.user[0].id, true)
+      .then((items) => {
+        res.render("dashboard", { result: items, user: req.user[0], message: req.query });
+      })
+      .catch((err) => {
         console.log(err);
-      } else {
-        res.render("dashboard", { result: result, user: req.user[0], message: req.query });
-      }
-    });
+        res.redirect("/dashboard?err=There is some error while fetching Notebooks!")
+      });
   } else {
     res.redirect("/login");
   }
@@ -198,7 +197,7 @@ exports.createNotebook = (req, res) => {
     const nbName = req.body.nbName;
     const nbColor = req.body.nbColor;
     const nbOwner = req.user[0].id;
-    createNotebookTransaction(nbName, nbColor, nbOwner)
+    createOwnerNotebook(nbName, nbColor, nbOwner)
       .then((item) => {
         console.log(item);
         res.redirect("/assignment?succ=" + nbName + " notebook created.");
@@ -222,9 +221,13 @@ exports.joinNotebook = (req, res) => {
         if (item == undefined || item.length == 0) {
           res.redirect("/assignment?err=Notebook not found!");
         } else {
-          createUserNotebook(req.user[0].id, item[0].id, "student", null)
-            .then(() => {
-              res.redirect("/assignment?succ=Notebook joined.");
+          findCreateUserNotebook(req.user[0].id, item[0].id, "student", null, true)
+            .then(([userNotebook, created]) => {
+              if (created) {
+                res.redirect("/assignment?succ=Notebook joined.");
+              } else {
+                res.redirect("/assignment?err=You have already joined the Notebook!");
+              }
             })
             .catch((err) => {
               console.log(err);

@@ -64,12 +64,7 @@
   npm run start
 ```
 
-- Create database tables (this will create all tables automatically)
-- *Note: This feature is deprecated and will be removed from README.md in future. The database tables will be automatically created using Sequelize on very first run.
-
-```bash
-  Goto: http://localhost:3000/firstrun
-```
+- The database tables will be automatically created using Sequelize on very first run.
 
 - Make sure to change view - 'asAdmin' in `nb_users` table after first login.
 

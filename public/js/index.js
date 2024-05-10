@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
       headerpd = document.getElementById(headerId),
       window_width = window.innerWidth;
 
-    if(window_width<768){
+    if(window_width<992){
         // show navbar
         nav.classList.toggle('shown')
         // change icon
