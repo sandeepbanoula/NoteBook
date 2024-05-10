@@ -111,11 +111,11 @@
 } 
 
 /* Cards */
-.card-cover {
+/* .card-cover {
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
-}
+} */
 
 .del-card{
   display: none;
