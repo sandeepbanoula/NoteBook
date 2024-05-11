@@ -22,7 +22,7 @@
     <div class="p-4">
       <div class="row">
         <div class="col">
-          <h2>Assignment Dashboard</h2>
+          <h2><%= result[0].name %></h2>
         </div>
         <% if(message.err){ %>
 
@@ -71,47 +71,58 @@
           </button>
         </div> -->
       </div>
-      <% if(user.view != "asStudent"){ %>
+      <!-- <% if(user.view != "asStudent"){ %>
       <div class="btn-toolbar mb-2 mb-md-0">
         <a type="button" href="/assignment/add" class="btn btn-sm btn-outline-secondary"> Add assignment </a>
       </div>
-      <% } %>
+      <% } %> -->
+      <ul class="nav nav-tabs flex-row justify-content-start">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/assignment">Assignments</a>
+        </li>
+        <% if(user.id == result[0].assignor){ %>
+        <li class="nav-item">
+          <a class="nav-link" href="/assignment/add">Add assignment</a>
+        </li>
+        <% } %>
+      </ul>
       <div id="assignmentCard" class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
         <% result.forEach(function(element){ %>
-        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 cardSingle">
-          <div class="card h-100 overflow-hidden shadow-lg">
-            <div class="row">
-              <div class="col-1" style="background-color: <%=element[ 'Notebook.color'] %>"></div>
-              <div class="col-2 d-flex justify-content-center align-items-center ps-4">
-                <img alt="<%=element['Notebook.User.name']%>" src="<%=element['Notebook.User.pic']%>" class="rounded-circle img-responsive border border-dark" width="75" height="75" />
-              </div>
-              <div class="col-md-8 col-7">
-                <div class="card-body d-flex flex-column justify-content-center pe-0">
-                  <h5 class="card-title fs-4 fw-bolder"><%=element['Notebook.name']%></h5>
-                  <p class="fw-normal mb-1"><%=element['Notebook.User.name']%></p>
-                  <p class="fw-light text-body-secondary mb-0">Role: <%= element.role=='owner'? 'Teacher':'Student'; %></p>
-                  <a href="/notebook-<%=element['Notebook.createdAt'].valueOf()%>-<%=element.notebook_id%>" class="stretched-link mt-auto submit-button"></a>
-                </div>
-              </div>
-              <div class="col-md-1 col-2 pt-3 ps-0 pe-3 fs-5">
-                <div class="dropdown">
-                  <a class="bx bx-dots-vertical-rounded z-2 position-absolute" data-bs-toggle="dropdown" aria-expanded="false"></a>
-                  <ul class="dropdown-menu position-fixed">
-                    <% if(element.role=="owner" || element.role=="teacher"){ %>
-                    <li><a class="dropdown-item" href="#">Copy invite link</a></li>
-                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                    <li><a class="dropdown-item" href="#">Archive</a></li>
-                    <% } %>
-                    <% if(element.role=="student" || element.role=="teacher"){ %>
-                    <li><a class="dropdown-item" href="#">Leave</a></li>
-                    <% } %>
-                  </ul>
-                </div>
-              </div>
+        <div id="<%= element.id %>" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 cardSingle">
+          <span class="d-none"><%= element.start_dt %></span>
+          <span class="d-none"><%= element.end_dt %></span>
+          <div class="card card-cover h-100 overflow-hidden shadow-lg" style="background-color: <%=element.color%>">
+            <div class="card-header">
+              <%=element.name%> <% if(user.view == "asAdmin" || user.id == element.assignor){ %>
+              <span class="position-absolute end-0 me-3 del-card">
+                <a class="del-link" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-assignmentid="<%=element.id%>"></a>
+              </span>
+              <% } %>
             </div>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Assignment #<%=element.id%></h5>
+              <p class="card-text"><%=element.topic%></p>
+              <a href="/assignment/view/<%=element.id%>" class="btn btn-primary stretched-link mt-auto submit-button">Submit Now</a>
+            </div>
+            <div class="card-footer">Due: <%=element.end_dt.toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });%></div>
           </div>
         </div>
         <% }); %>
+      </div>
+    </div>
+  </div>
+  <!-- Delted Modal Popup -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteAssignmentPopup" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Delete assignment!</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">The assignment and its submissions will be permanently deleted.</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+        </div>
       </div>
     </div>
   </div>
@@ -157,5 +168,40 @@
     }
   }
 </script>
+
+<!-- <script>
+  filterSelection("active");
+  function filterSelection(e) {
+    // Declare variables
+    var container, div, span0, span1, currentTime, txtValue0, textValue1, i;
+    container = document.getElementById('assignmentCard');
+    div = document.getElementsByClassName("cardSingle");
+    currentTime = new Date();
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < div.length; i++) {
+
+      span0 = div[i].getElementsByTagName("span")[0];
+      span1 = div[i].getElementsByTagName("span")[1];
+      txtValue0 = span0.textContent || span0.innerText;
+      txtValue1 = span1.textContent || span1.innerText;
+
+      console.log( new Date(Date.parse(txtValue0)));
+      console.log(txtValue1);
+      console.log(currentTime);
+      if(e=="all"){
+        div[i].style.display = "";
+      } else if (e=="active" && (currentTime <= new Date(Date.parse(txtValue0)) && currentTime >= new Date(Date.parse(txtValue1)))) {
+        console.log("dd");
+        div[i].style.display = "";
+
+      }else if(e=="inactive" && (new Date(txtValue0)<currentTime || new Date(textValue1)>currentTime)){
+        div[i].style.display = "";
+      } else{
+        div[i].style.display = "none";
+      }
+    }
+  }
+  </script> -->
 
 <%- include('partials/footer'); -%>

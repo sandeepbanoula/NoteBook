@@ -4,18 +4,26 @@
   <%- include('partials/sidebarMenu'); -%>
 
   <div class="d-flex flex-column flex-grow-1 bg-light">
-
     <div class="p-4">
+      <ul class="nav nav-tabs flex-row justify-content-start pb-3">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="/assignment">Assignments</a>
+        </li>
+        <% if(user.id == subjects[0].owner){ %>
+        <li class="nav-item">
+          <a class="nav-link active" href="/assignment/add">Add assignment</a>
+        </li>
+        <% } %>
+      </ul>
       <h2 class="mb-3 border-bottom">Add Assignments</h2>
 
       <form action="/assignment/add" method="post">
-
         <div class="form-group">
           <select class="form-select" name="subject" required>
             <option value="">Select Subject</option>
             <% subjects.forEach(function(element){ %>
-            <option value="<%=element.id%>" style="background-color:<%=element.color%> "><%=element.name%></option>
-            <%  }); %>
+            <option value="<%=element.id%>" style="background-color: <%=element.color%>"><%=element.name%></option>
+            <% }); %>
           </select>
         </div>
 
@@ -37,26 +45,20 @@
 
         <div class="form-group mt-3">
           <label class="form-label" for="assignment-body">Assignment Body</label>
-          <textarea id="assignment-body" class="form-control" name="assignmentBody" placeholder="Assignment Instructions"
-            rows="11"></textarea>
+          <textarea id="assignment-body" class="form-control" name="assignmentBody" placeholder="Assignment Instructions" rows="11"></textarea>
         </div>
 
         <div class="form-group mt-3 row">
           <div class="col col-sm-3">
             <div class="input-group">
               <span class="input-group-text bg-success text-white">Max Marks</span>
-              <input id="max_marks" class="form-control focus-ring" type="number" name="max_marks" min="1" max="999" style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)"/>
+              <input id="max_marks" class="form-control focus-ring" type="number" name="max_marks" min="1" max="999" style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), 0.25)" />
             </div>
-            
-          </div> 
+          </div>
         </div>
 
-        <button class="btn btn-primary mt-3" type="submit" name="Assign">
-          Assign
-        </button>
+        <button class="btn btn-primary mt-3" type="submit" name="Assign">Assign</button>
       </form>
-
-
     </div>
   </div>
 </main>
@@ -68,8 +70,8 @@
     timePicker24Hour: true,
     startDate: moment().startOf("minute"),
     locale: {
-      format: "YYYY-MM-DD HH:mm:ss"
-    }
+      format: "YYYY-MM-DD HH:mm:ss",
+    },
   });
 
   $("#end_dt").daterangepicker({
@@ -78,12 +80,12 @@
     timePicker24Hour: true,
     startDate: moment().startOf("minute").add(7, "days"),
     locale: {
-      format: "YYYY-MM-DD HH:mm:ss"
-    }
+      format: "YYYY-MM-DD HH:mm:ss",
+    },
   });
 
   // Prevent Bootstrap dialog from blocking focusin
-  $(document).on('focusin', function (e) {
+  $(document).on("focusin", function (e) {
     if ($(e.target).closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
       e.stopImmediatePropagation();
     }

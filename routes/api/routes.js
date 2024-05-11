@@ -11,7 +11,7 @@ router.get('/auth/google', passport.authenticate('google', { scope: ["profile", 
 router.get('/auth/google/notebook', passport.authenticate('google', { failureRedirect: '/login' }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect('/assignment');
+    res.redirect('/dashboard');
   });
 
 // home page Route
@@ -36,7 +36,7 @@ router.get("/assignment/add", controller.addassignment);
 router.get('/assignment', controller.assignment);
 
 //  board route
-router.get('/assignment/notebook-:dt-:subjectid', controller.subjectassignment);
+router.get('/notebook-:dt-:subjectid', controller.subjectassignment);
 
 // individual assignment route
 router.get("/assignment/view/:assignmentid", controller.viewassignment);

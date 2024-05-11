@@ -90,7 +90,8 @@ exports.subjectassignment = (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        res.render("assignmentBoard", { result: result, user: req.user[0], message: req.query });
+        console.log(result);
+        res.render("notebook", { result: result, user: req.user[0], message: req.query });
       }
     });
   } else {
@@ -128,7 +129,7 @@ exports.viewassignment = (req, res) => {
           res.render("assignment", { result: result[0], user: req.user[0] });
         }
       } else {
-        res.redirect("/assignment");
+        res.redirect("/dashboard");
       }
     })
   } else {
@@ -175,16 +176,17 @@ exports.deleteassignment = (req, res) => {
 exports.addassignment = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user[0].view !== "asStudent") {
-      let sql = `SELECT * FROM nb_notebooks`;
-      db.query(sql, (err, result) => {
+      let sql = `SELECT * FROM nb_notebooks where owner=?`;
+      db.query(sql, req.user[0].id, (err, result) => {
         if (err) {
           console.log(err);
         } else {
+          console.log(result);
           res.render("addAssignment", { user: req.user[0], subjects: result });
         }
       });
     } else {
-      res.redirect("/assignment");
+      res.redirect("/dashboard");
     }
   } else {
     res.redirect("/login");
@@ -260,11 +262,11 @@ exports.viewsubmissions = (req, res) => {
         } else if (result.length) {
           res.render("submission", { result: result, user: req.user[0] });
         } else {
-          res.redirect("/assignment");
+          res.redirect("/dashboard");
         }
       });
     } else {
-      res.redirect("/assignment");
+      res.redirect("/dashboard");
     }
   } else {
     res.redirect("/login");
@@ -374,7 +376,7 @@ exports.submitfeedback = (req, res) => {
 
         });
     } else {
-      res.redirect("/assignment");
+      res.redirect("/dashboard");
     }
   } else {
     res.redirect("/login");
@@ -414,7 +416,7 @@ exports.editroles = (req, res) => {
       }
       res.redirect("/settings");
     } else {
-      res.redirect("/assignment");
+      res.redirect("/dashboard");
     }
 
   } else {
@@ -441,7 +443,7 @@ exports.editsubjects = (req, res) => {
 
       res.redirect("/settings");
     } else {
-      res.redirect("/assignment");
+      res.redirect("/dashboard");
     }
 
   } else {
@@ -476,9 +478,9 @@ exports.uploads = (req, res, next) => {
       assignment_id: req.body.assignmentId,
       user_id: req.user[0].id,
       subject: req.body.subject,
-      imageName: files[index].originalname,
-      imageType: files[index].mimetype,
-      imageBase64: src,
+      image_name: files[index].originalname,
+      image_type: files[index].mimetype,
+      image_base64: src,
       comments: req.body.comment
     }
 
