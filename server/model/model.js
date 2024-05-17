@@ -146,9 +146,6 @@ const User = sequelize.define('User', {
     }
 }, {
     tableName: "nb_users",
-    timestamps: true,
-    updatedAt: false,
-    createdAt: "registered"
 });
 
 //M-to-M relation table between nb_users and nb_notebooks
@@ -240,7 +237,7 @@ UserNotebook.belongsTo(User, {
     foreignKey: "user_id"
 });
 
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ force: true }).then(() => {
     console.log('Table created successfully.');
 }).catch((error) => {
     console.log('Error creating table:', error);

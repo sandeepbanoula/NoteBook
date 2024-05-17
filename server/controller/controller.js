@@ -1,8 +1,8 @@
 const fs = require("fs");
 const db = require("../../database/db");
-const { createNotebookTransaction } = require("../repository/transactions");
-const { createUserNotebook, selectUserNotebook, findCreateUserNotebook } = require("../repository/UserNotebookRepository");
+const { selectUserNotebook, findCreateUserNotebook } = require("../repository/UserNotebookRepository");
 const { selectNotebookByCode, createOwnerNotebook } = require("../repository/NotebookRepository");
+const { selectAllUsers, updateUser } = require("../repository/UserRepository");
 
 // Home route
 exports.home = (req, res) => {
@@ -275,21 +275,23 @@ exports.viewsubmissions = (req, res) => {
 exports.settings = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user[0].view === "asAdmin") {
-      let sql = `SELECT * FROM nb_users WHERE id != ? ORDER BY name ;`;
-      db.query(sql, req.user[0].id, (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
+      selectAllUsers({}, true)
+        .then((items) => {
           sql = `SELECT * FROM nb_notebooks ORDER BY name;`;
           db.query(sql, (err, subjects) => {
             if (err) {
               console.log(err);
+              res.redirect("/settings?err=There is some error while fetching Notebooks.")
             } else {
-              res.render("settings", { user: req.user[0], result: result, subjects: subjects });
+              res.render("settings", { user: req.user[0], result: items, subjects: subjects });
             }
           });
-        }
-      });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.redirect("/settings?err=There is some error while fetching Users.")
+        });
+
     } else {
       res.render("settings", { user: req.user[0] });
     }
@@ -384,15 +386,18 @@ exports.submitfeedback = (req, res) => {
 // edit profile post route
 exports.editprofile = (req, res) => {
   if (req.isAuthenticated()) {
-    let name = req.body.username;
-    let sql = `UPDATE nb_users SET name = ? WHERE id = ?`;
-    db.query(sql, [name, req.user[0].id], (err, result) => {
-      if (err) {
+    let updatedName = req.body.username;
+    let changes = { name: updatedName }
+    updateUser(changes, req.user[0].id)
+      .then((items) => {
+        console.log(items);
+        req.user[0].name = updatedName;
+        res.redirect("/settings?succ=User data updated.")
+      })
+      .catch((err) => {
         console.log(err);
-      } else {
-        res.redirect("/signout");
-      }
-    });
+        res.redirect("/settings?err=Error while updating user data!")
+      })
   } else {
     res.redirect("/login");
   }
@@ -403,16 +408,15 @@ exports.editroles = (req, res) => {
   if (req.isAuthenticated()) {
     if (req.user[0].view === "asAdmin") {
       let roles = req.body;
-      let sql = `UPDATE nb_users SET view = ? WHERE id = ?`;
-
-      for (var key in roles) {
-        let query = db.query(sql, [roles[key], key], (err, result) => {
-          if (err) {
+      for (const userId in roles) {
+        let changes = { view: roles[userId] }
+        updateUser(changes, userId)
+          .catch((err) => {
             console.log(err);
-          }
-        });
+            res.redirect("/settings?err=There is some error while updating user roles.");
+          });
       }
-      res.redirect("/settings");
+      res.redirect("/settings?succ=Succesfully updated user role.");
     } else {
       res.redirect("/assignment");
     }
